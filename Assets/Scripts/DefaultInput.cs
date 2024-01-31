@@ -44,6 +44,15 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""973cfa32-107e-457a-9ddc-4b80119ae3bb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -112,6 +121,17 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4350551b-7532-4287-ae8b-e68ebecee877"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -122,6 +142,7 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
         m_Characer = asset.FindActionMap("Characer", throwIfNotFound: true);
         m_Characer_Movement = m_Characer.FindAction("Movement", throwIfNotFound: true);
         m_Characer_View = m_Characer.FindAction("View", throwIfNotFound: true);
+        m_Characer_Jump = m_Characer.FindAction("Jump", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -185,12 +206,14 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
     private List<ICharacerActions> m_CharacerActionsCallbackInterfaces = new List<ICharacerActions>();
     private readonly InputAction m_Characer_Movement;
     private readonly InputAction m_Characer_View;
+    private readonly InputAction m_Characer_Jump;
     public struct CharacerActions
     {
         private @DefaultInput m_Wrapper;
         public CharacerActions(@DefaultInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Characer_Movement;
         public InputAction @View => m_Wrapper.m_Characer_View;
+        public InputAction @Jump => m_Wrapper.m_Characer_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Characer; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -206,6 +229,9 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
             @View.started += instance.OnView;
             @View.performed += instance.OnView;
             @View.canceled += instance.OnView;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
         }
 
         private void UnregisterCallbacks(ICharacerActions instance)
@@ -216,6 +242,9 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
             @View.started -= instance.OnView;
             @View.performed -= instance.OnView;
             @View.canceled -= instance.OnView;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
         }
 
         public void RemoveCallbacks(ICharacerActions instance)
@@ -237,5 +266,6 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnView(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
 }

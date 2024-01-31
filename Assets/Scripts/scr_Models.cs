@@ -18,9 +18,13 @@ public static class scr_Models
         public bool ViewYInverted;
 
         [Header("Movement")]
-        public float WalkingForwardSpeed = 5;
-        public float WalkingBackwardSpeed = 4;
+        public float WalkingForwardSpeed = 4;
+        public float WalkingBackwardSpeed = 2;
         public float WalkingStrafeSpeed = 3;
+
+        [Header("Jumping")]
+        public float JumpingHeight = 0.4f;
+        public float JumpingFalloff = 0.1f;
     }
 
     #endregion
