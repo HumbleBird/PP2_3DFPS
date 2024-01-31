@@ -34,13 +34,23 @@ public class Scr_Character_Controller : MonoBehaviour
 
     [Header("Player Stance")]
     public PlayerStance playerStance;
+    public float stancePlayerColliderHeightVelocity;
     public float playerStanceSmoothing;
-    public float cameraStandeHeight;
-    public float cameraCrouchHeight;
-    public float cameraProneHeight;
+    public Vector3 stanceCenterVelocity;
+
+    [Header("Camera Stance")]
+    public CharacterStance playerStandeStance;
+    public CharacterStance playerCrouchStance;
+    public CharacterStance playerProneStance;
 
     public float cameraHeight;
     public float cameraHeightVelocity;
+
+    private Vector3 stanceCapsuleCenter;
+    private Vector3 stanceCapsuleCenterVelocity;
+
+    private float stanceCapsuleHeight;
+    private float stanceCapsuleHeightVelocity;
 
     private void Awake()
     {
@@ -58,6 +68,8 @@ public class Scr_Character_Controller : MonoBehaviour
         characterController = GetComponent<CharacterController>();
 
         cameraHeight = cameraHolder.localPosition.y;
+
+        playerStance = PlayerStance.Stande;
     }
 
     // Update is called once per frame
@@ -66,24 +78,27 @@ public class Scr_Character_Controller : MonoBehaviour
         CalculateView();
         CalculateMovement();
         CaculateJump();
-        CalculateCameraHeight();
+        CalculateStance();
     }
 
-    private void CalculateCameraHeight()
+    private void CalculateStance()
     {
-        float stanceHeight = cameraStandeHeight;
+        var currentStance = playerStandeStance;
 
         if(playerStance == PlayerStance.Crouch)
         {
-            stanceHeight = cameraCrouchHeight;
+            currentStance = playerCrouchStance;
         }
         else if (playerStance == PlayerStance.Prone)
         {
-            stanceHeight = cameraProneHeight;
+            currentStance = playerProneStance;
         }
 
-        cameraHeight = Mathf.SmoothDamp(cameraHolder.localPosition.y, stanceHeight, ref cameraHeightVelocity, playerStanceSmoothing);
+        cameraHeight = Mathf.SmoothDamp(cameraHolder.localPosition.y, currentStance.CameraHeight, ref cameraHeightVelocity, playerStanceSmoothing);
         cameraHolder.localPosition = new Vector3(cameraHolder.localPosition.x, cameraHeight, cameraHolder.localPosition.z);
+
+        characterController.height = Mathf.SmoothDamp(characterController.height, currentStance.StanceCollider.height, ref stanceCapsuleHeightVelocity, playerStanceSmoothing);
+        characterController.center = Vector3.SmoothDamp(characterController.center, currentStance.StanceCollider.center, ref stanceCapsuleCenterVelocity, playerStanceSmoothing);   
     }
 
     private void CalculateView()
