@@ -71,6 +71,15 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""f9db1cd1-fa4b-404f-8519-d399ca9b95c1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -183,6 +192,17 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
                     ""action"": ""Prone"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f2e30f9a-edaa-41a7-b39f-06c769060ca1"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -196,6 +216,7 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
         m_Characer_Jump = m_Characer.FindAction("Jump", throwIfNotFound: true);
         m_Characer_Crouch = m_Characer.FindAction("Crouch", throwIfNotFound: true);
         m_Characer_Prone = m_Characer.FindAction("Prone", throwIfNotFound: true);
+        m_Characer_Sprint = m_Characer.FindAction("Sprint", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -262,6 +283,7 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Characer_Jump;
     private readonly InputAction m_Characer_Crouch;
     private readonly InputAction m_Characer_Prone;
+    private readonly InputAction m_Characer_Sprint;
     public struct CharacerActions
     {
         private @DefaultInput m_Wrapper;
@@ -271,6 +293,7 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Characer_Jump;
         public InputAction @Crouch => m_Wrapper.m_Characer_Crouch;
         public InputAction @Prone => m_Wrapper.m_Characer_Prone;
+        public InputAction @Sprint => m_Wrapper.m_Characer_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Characer; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -295,6 +318,9 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
             @Prone.started += instance.OnProne;
             @Prone.performed += instance.OnProne;
             @Prone.canceled += instance.OnProne;
+            @Sprint.started += instance.OnSprint;
+            @Sprint.performed += instance.OnSprint;
+            @Sprint.canceled += instance.OnSprint;
         }
 
         private void UnregisterCallbacks(ICharacerActions instance)
@@ -314,6 +340,9 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
             @Prone.started -= instance.OnProne;
             @Prone.performed -= instance.OnProne;
             @Prone.canceled -= instance.OnProne;
+            @Sprint.started -= instance.OnSprint;
+            @Sprint.performed -= instance.OnSprint;
+            @Sprint.canceled -= instance.OnSprint;
         }
 
         public void RemoveCallbacks(ICharacerActions instance)
@@ -338,5 +367,6 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnProne(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
 }

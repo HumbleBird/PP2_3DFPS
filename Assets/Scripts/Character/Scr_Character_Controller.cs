@@ -52,6 +52,8 @@ public class Scr_Character_Controller : MonoBehaviour
     private float stanceCapsuleHeight;
     private float stanceCapsuleHeightVelocity;
 
+    private bool isSprinting;
+
 
     private void Awake()
     {
@@ -60,9 +62,9 @@ public class Scr_Character_Controller : MonoBehaviour
         defaultInput.Characer.Movement.performed += e => input_Movement = e.ReadValue<Vector2>();
         defaultInput.Characer.View.performed += e => input_View = e.ReadValue<Vector2>();
         defaultInput.Characer.Jump.performed += e => Jump();
-
         defaultInput.Characer.Crouch.performed += e => Crouch();
         defaultInput.Characer.Prone.performed += e => Prone();
+        defaultInput.Characer.Sprint.performed += e => ToggleSprint();
 
         defaultInput.Enable();
 
@@ -120,10 +122,22 @@ public class Scr_Character_Controller : MonoBehaviour
 
     private void CalculateMovement()
     {
-        var verticalSpeed = playerSettings.WalkingForwardSpeed * input_Movement.y * Time.deltaTime;
-        var horizontalSpeed = playerSettings.WalkingStrafeSpeed * input_Movement.x * Time.deltaTime;
+        if(input_Movement.y <= 0.2f)
+        {
+            isSprinting = false;
+        }
 
-        var newMovementSpeed = new Vector3(horizontalSpeed, 0, verticalSpeed);
+        var verticalSpeed = playerSettings.WalkingForwardSpeed;
+        var horizontalSpeed = playerSettings.WalkingStrafeSpeed;
+
+        if(isSprinting)
+        {
+            verticalSpeed = playerSettings.RunningForwardSpeed;
+            horizontalSpeed = playerSettings.RunningStrafeSpeed;
+        }
+
+
+        var newMovementSpeed = new Vector3(horizontalSpeed * input_Movement.x * Time.deltaTime, 0, verticalSpeed * input_Movement.y * Time.deltaTime);
         newMovementSpeed = transform.TransformDirection(newMovementSpeed);
 
         if(playerGravity > grabityMin)
@@ -150,8 +164,14 @@ public class Scr_Character_Controller : MonoBehaviour
 
     private void Jump()
     {
-        if(!characterController.isGrounded)
+        if(!characterController.isGrounded || playerStance == PlayerStance.Prone)
         {
+            return;
+        }
+
+        if(playerStance == PlayerStance.Crouch)
+        {
+                playerStance = PlayerStance.Stande;
             return;
         }
 
@@ -194,5 +214,16 @@ public class Scr_Character_Controller : MonoBehaviour
         var end = new Vector3(feetTransform.position.x, feetTransform.position.y - characterController.radius - stanceCheckErrorMargin + stanceCheckheight, feetTransform.position.z);
 
         return Physics.CheckCapsule(start, end, characterController.radius, playerMask);
+    }
+
+    private void ToggleSprint()
+    {
+        if (input_Movement.y <= 0.2f)
+        {
+            isSprinting = false;
+            return;
+        }
+
+        isSprinting = !isSprinting;
     }
 }
