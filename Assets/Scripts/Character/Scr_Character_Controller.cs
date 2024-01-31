@@ -7,11 +7,13 @@ using static scr_Models;
 
 public class Scr_Character_Controller : MonoBehaviour
 {
+    CharacterController characterController;
     private DefaultInput defaultInput;
     public Vector2 input_Movement;
     public Vector2 input_View;
 
     private Vector3 newCameraRotation;
+    private Vector3 newCharacterRotation;
 
     [Header("References")]
     public Transform cameraHolder;
@@ -31,6 +33,9 @@ public class Scr_Character_Controller : MonoBehaviour
         defaultInput.Enable();
 
         newCameraRotation = cameraHolder.localRotation.eulerAngles;
+        newCharacterRotation = transform.localRotation.eulerAngles;
+
+        characterController = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
@@ -42,8 +47,10 @@ public class Scr_Character_Controller : MonoBehaviour
 
     private void CalculateMovement()
     {
-        newCameraRotation.x += playerSettings.ViewYSensitivity * input_View.y * Time.deltaTime;
+        newCharacterRotation.y += playerSettings.ViewYSensitivity * (playerSettings.ViewXInverted ? -input_View.x : input_View.x) * Time.deltaTime;
+        transform.localRotation = Quaternion.Euler(newCharacterRotation);
 
+        newCameraRotation.x += playerSettings.ViewYSensitivity * (playerSettings.ViewYInverted ? input_View.y  : -input_View.y) * Time.deltaTime;
         newCameraRotation.x = Mathf.Clamp(newCameraRotation.x, viewClampYMin, viewClampYMax);
 
         cameraHolder.localRotation = Quaternion.Euler(newCameraRotation);
@@ -51,5 +58,12 @@ public class Scr_Character_Controller : MonoBehaviour
 
     private void CalculateView()
     {
+        var verticalSpeed = playerSettings.WalkingForwardSpeed * input_Movement.y * Time.deltaTime;
+        var horizontalSpeed = playerSettings.WalkingStrafeSpeed * input_Movement.x * Time.deltaTime;
+
+        var newMovementSpeed = new Vector3(horizontalSpeed, 0, verticalSpeed);
+        newMovementSpeed = transform.TransformDirection(newMovementSpeed);
+
+        characterController.Move(newMovementSpeed);
     }
 }
