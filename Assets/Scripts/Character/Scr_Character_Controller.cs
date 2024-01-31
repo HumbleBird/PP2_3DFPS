@@ -9,19 +9,21 @@ public class Scr_Character_Controller : MonoBehaviour
 {
     CharacterController characterController;
     private DefaultInput defaultInput;
-    public Vector2 input_Movement;
-    public Vector2 input_View;
+    private Vector2 input_Movement;
+    private Vector2 input_View;
 
     private Vector3 newCameraRotation;
     private Vector3 newCharacterRotation;
 
     [Header("References")]
     public Transform cameraHolder;
+    public Transform feetTransform;
 
     [Header("Settings")]
     public PlayerSettingsModel playerSettings;
     public float viewClampYMin = -70;
     public float viewClampYMax = 80;
+    public LayerMask playerMask;
 
     [Header("Gravity")]
     public float grabityAmount = 0.1f;
@@ -37,20 +39,19 @@ public class Scr_Character_Controller : MonoBehaviour
     public float stancePlayerColliderHeightVelocity;
     public float playerStanceSmoothing;
     public Vector3 stanceCenterVelocity;
-
-    [Header("Camera Stance")]
     public CharacterStance playerStandeStance;
     public CharacterStance playerCrouchStance;
     public CharacterStance playerProneStance;
-
-    public float cameraHeight;
-    public float cameraHeightVelocity;
+    private float stanceCheckErrorMargin = 0.05f;
+    private float cameraHeight;
+    private float cameraHeightVelocity;
 
     private Vector3 stanceCapsuleCenter;
     private Vector3 stanceCapsuleCenterVelocity;
 
     private float stanceCapsuleHeight;
     private float stanceCapsuleHeightVelocity;
+
 
     private void Awake()
     {
@@ -59,6 +60,9 @@ public class Scr_Character_Controller : MonoBehaviour
         defaultInput.Characer.Movement.performed += e => input_Movement = e.ReadValue<Vector2>();
         defaultInput.Characer.View.performed += e => input_View = e.ReadValue<Vector2>();
         defaultInput.Characer.Jump.performed += e => Jump();
+
+        defaultInput.Characer.Crouch.performed += e => Crouch();
+        defaultInput.Characer.Prone.performed += e => Prone();
 
         defaultInput.Enable();
 
@@ -71,6 +75,8 @@ public class Scr_Character_Controller : MonoBehaviour
 
         playerStance = PlayerStance.Stande;
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -153,5 +159,40 @@ public class Scr_Character_Controller : MonoBehaviour
         jumpingForce = Vector3.up * playerSettings.JumpingHeight;
         playerGravity = 0;
 
+    }
+
+    private void Crouch()
+    {
+        if(playerStance == PlayerStance.Crouch)
+        {
+            if(StanceCheck(playerStandeStance.StanceCollider.height))
+            {
+                return;
+            }
+
+            playerStance = PlayerStance.Stande;
+            return;
+        }
+
+        if(StanceCheck(playerCrouchStance.StanceCollider.height))
+        {
+            return;
+        }
+
+        playerStance = PlayerStance.Crouch;
+
+    }
+
+    private void Prone()
+    {
+        playerStance = PlayerStance.Prone;
+    }
+
+    private bool StanceCheck(float stanceCheckheight)
+    {
+        var start = new Vector3(feetTransform.position.x, feetTransform.position.y + characterController.radius + stanceCheckErrorMargin, feetTransform.position.z);
+        var end = new Vector3(feetTransform.position.x, feetTransform.position.y - characterController.radius - stanceCheckErrorMargin + stanceCheckheight, feetTransform.position.z);
+
+        return Physics.CheckCapsule(start, end, characterController.radius, playerMask);
     }
 }
