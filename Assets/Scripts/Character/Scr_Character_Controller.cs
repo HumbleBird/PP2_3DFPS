@@ -31,6 +31,17 @@ public class Scr_Character_Controller : MonoBehaviour
     public Vector3 jumpingForce;
     private Vector3 jumpingForceVelocity;
 
+
+    [Header("Player Stance")]
+    public PlayerStance playerStance;
+    public float playerStanceSmoothing;
+    public float cameraStandeHeight;
+    public float cameraCrouchHeight;
+    public float cameraProneHeight;
+
+    public float cameraHeight;
+    public float cameraHeightVelocity;
+
     private void Awake()
     {
         defaultInput = new DefaultInput();
@@ -45,6 +56,8 @@ public class Scr_Character_Controller : MonoBehaviour
         newCharacterRotation = transform.localRotation.eulerAngles;
 
         characterController = GetComponent<CharacterController>();
+
+        cameraHeight = cameraHolder.localPosition.y;
     }
 
     // Update is called once per frame
@@ -53,6 +66,24 @@ public class Scr_Character_Controller : MonoBehaviour
         CalculateView();
         CalculateMovement();
         CaculateJump();
+        CalculateCameraHeight();
+    }
+
+    private void CalculateCameraHeight()
+    {
+        float stanceHeight = cameraStandeHeight;
+
+        if(playerStance == PlayerStance.Crouch)
+        {
+            stanceHeight = cameraCrouchHeight;
+        }
+        else if (playerStance == PlayerStance.Prone)
+        {
+            stanceHeight = cameraProneHeight;
+        }
+
+        cameraHeight = Mathf.SmoothDamp(cameraHolder.localPosition.y, stanceHeight, ref cameraHeightVelocity, playerStanceSmoothing);
+        cameraHolder.localPosition = new Vector3(cameraHolder.localPosition.x, cameraHeight, cameraHolder.localPosition.z);
     }
 
     private void CalculateView()
@@ -74,21 +105,16 @@ public class Scr_Character_Controller : MonoBehaviour
         var newMovementSpeed = new Vector3(horizontalSpeed, 0, verticalSpeed);
         newMovementSpeed = transform.TransformDirection(newMovementSpeed);
 
-        if(playerGravity > grabityMin && jumpingForce.y < 0.1f)
+        if(playerGravity > grabityMin)
         {
             playerGravity -= grabityAmount * Time.deltaTime;
         }
 
-        if(playerGravity < -1 && characterController.isGrounded)
+        if(playerGravity < -0.1f && characterController.isGrounded)
         {
-            playerGravity = -1;
+            playerGravity = -0.1f;
         }
 
-        if (jumpingForce.y > 0.1f)
-        {
-            playerGravity = 0;
-
-        }
 
         newMovementSpeed.y += playerGravity;
         newMovementSpeed += jumpingForce * Time.deltaTime;
@@ -108,6 +134,9 @@ public class Scr_Character_Controller : MonoBehaviour
             return;
         }
 
+        // Jump
         jumpingForce = Vector3.up * playerSettings.JumpingHeight;
+        playerGravity = 0;
+
     }
 }
