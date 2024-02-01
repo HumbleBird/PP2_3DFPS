@@ -629,10 +629,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    SwayAmount: 1
+    SwayAmount: 6
     SwayYInverted: 0
     SwayXInverted: 0
-    SwaySmoothing: 1
+    SwaySmoothing: 0.1
+    SwayResetSmoothing: 0.1
+    SwayClampX: 8
+    SwayClampY: 8
 --- !u!4 &584357952
 Transform:
   m_ObjectHideFlags: 0
