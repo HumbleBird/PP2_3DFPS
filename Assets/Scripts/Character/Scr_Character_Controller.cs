@@ -9,7 +9,8 @@ public class Scr_Character_Controller : MonoBehaviour
 {
     CharacterController characterController;
     private DefaultInput defaultInput;
-    private Vector2 input_Movement;
+    [HideInInspector]
+    public Vector2 input_Movement;
     [HideInInspector]
     public Vector2 input_View;
 
