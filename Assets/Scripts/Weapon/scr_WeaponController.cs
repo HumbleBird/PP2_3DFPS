@@ -8,6 +8,9 @@ public class scr_WeaponController : MonoBehaviour
 {
     private Scr_Character_Controller characterController;
 
+    [Header("References")]
+    public Animator weaponAnimator;
+
     [Header("Settings")]
     public WeaponSettginsModel settings;
 
@@ -42,6 +45,9 @@ public class scr_WeaponController : MonoBehaviour
         {
             return;
         }
+
+        // Animation
+        weaponAnimator.speed = characterController.weaponAnimationSpeed;
 
         // Weapon Sway
         targetWeaponRotation.y += settings.SwayAmount * (settings.SwayXInverted ? -characterController.input_View.x : characterController.input_View.x) * Time.deltaTime;
