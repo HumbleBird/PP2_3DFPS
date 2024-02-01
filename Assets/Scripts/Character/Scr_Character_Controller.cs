@@ -55,6 +55,9 @@ public class Scr_Character_Controller : MonoBehaviour
     private bool isSprinting;
 
 
+    private Vector3 newMovementSpeed;
+    private Vector3 newMovementSpeedVelocity;
+
     private void Awake()
     {
         defaultInput = new DefaultInput();
@@ -65,6 +68,7 @@ public class Scr_Character_Controller : MonoBehaviour
         defaultInput.Characer.Crouch.performed += e => Crouch();
         defaultInput.Characer.Prone.performed += e => Prone();
         defaultInput.Characer.Sprint.performed += e => ToggleSprint();
+        defaultInput.Characer.SprintReleased.performed += e => StopSprint();
 
         defaultInput.Enable();
 
@@ -137,8 +141,8 @@ public class Scr_Character_Controller : MonoBehaviour
         }
 
 
-        var newMovementSpeed = new Vector3(horizontalSpeed * input_Movement.x * Time.deltaTime, 0, verticalSpeed * input_Movement.y * Time.deltaTime);
-        newMovementSpeed = transform.TransformDirection(newMovementSpeed);
+        newMovementSpeed =Vector3.SmoothDamp(newMovementSpeed,  new Vector3(horizontalSpeed * input_Movement.x * Time.deltaTime, 0, verticalSpeed * input_Movement.y * Time.deltaTime), ref newMovementSpeedVelocity, playerSettings.MovementSmoothing);
+        var MovementSpeed = transform.TransformDirection(newMovementSpeed);
 
         if(playerGravity > grabityMin)
         {
@@ -151,10 +155,10 @@ public class Scr_Character_Controller : MonoBehaviour
         }
 
 
-        newMovementSpeed.y += playerGravity;
-        newMovementSpeed += jumpingForce * Time.deltaTime;
+        MovementSpeed.y += playerGravity;
+        MovementSpeed += jumpingForce * Time.deltaTime;
 
-        characterController.Move(newMovementSpeed);
+        characterController.Move(MovementSpeed);
     }
 
     private void CaculateJump()
@@ -225,5 +229,13 @@ public class Scr_Character_Controller : MonoBehaviour
         }
 
         isSprinting = !isSprinting;
+    }
+
+    private void StopSprint()
+    {
+        if(playerSettings.SprintingHold)
+        {
+            isSprinting = false;
+        }
     }
 }

@@ -80,6 +80,15 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SprintReleased"",
+                    ""type"": ""Button"",
+                    ""id"": ""e11d2fb8-9d30-4b20-95cb-5739db73f7b0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -203,6 +212,17 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1756d8e2-75cf-45fa-9097-ff3e98409257"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SprintReleased"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -217,6 +237,7 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
         m_Characer_Crouch = m_Characer.FindAction("Crouch", throwIfNotFound: true);
         m_Characer_Prone = m_Characer.FindAction("Prone", throwIfNotFound: true);
         m_Characer_Sprint = m_Characer.FindAction("Sprint", throwIfNotFound: true);
+        m_Characer_SprintReleased = m_Characer.FindAction("SprintReleased", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -284,6 +305,7 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Characer_Crouch;
     private readonly InputAction m_Characer_Prone;
     private readonly InputAction m_Characer_Sprint;
+    private readonly InputAction m_Characer_SprintReleased;
     public struct CharacerActions
     {
         private @DefaultInput m_Wrapper;
@@ -294,6 +316,7 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
         public InputAction @Crouch => m_Wrapper.m_Characer_Crouch;
         public InputAction @Prone => m_Wrapper.m_Characer_Prone;
         public InputAction @Sprint => m_Wrapper.m_Characer_Sprint;
+        public InputAction @SprintReleased => m_Wrapper.m_Characer_SprintReleased;
         public InputActionMap Get() { return m_Wrapper.m_Characer; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -321,6 +344,9 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
+            @SprintReleased.started += instance.OnSprintReleased;
+            @SprintReleased.performed += instance.OnSprintReleased;
+            @SprintReleased.canceled += instance.OnSprintReleased;
         }
 
         private void UnregisterCallbacks(ICharacerActions instance)
@@ -343,6 +369,9 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
+            @SprintReleased.started -= instance.OnSprintReleased;
+            @SprintReleased.performed -= instance.OnSprintReleased;
+            @SprintReleased.canceled -= instance.OnSprintReleased;
         }
 
         public void RemoveCallbacks(ICharacerActions instance)
@@ -368,5 +397,6 @@ public partial class @DefaultInput: IInputActionCollection2, IDisposable
         void OnCrouch(InputAction.CallbackContext context);
         void OnProne(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnSprintReleased(InputAction.CallbackContext context);
     }
 }
