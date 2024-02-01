@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2261.303, g: 2402.5745, b: 3499.9653, a: 1}
+  m_IndirectSpecularColor: {r: 2260.9495, g: 2402.2815, b: 3499.5435, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -603,7 +603,7 @@ MonoBehaviour:
   weaponSwayObject: {fileID: 233137426}
   swayAmountA: 1
   swayAmountB: 2
-  swayScale: 600
+  swayScale: 5000
   swayLerpSpeed: 14
   swayTime: 0
   swayPosition: {x: 0, y: 0, z: 0}
@@ -1091,6 +1091,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2421401262250405884, guid: e5c39ae9452b48f429a31f10d9ea4c79,
         type: 3}
+      propertyPath: playerSettings.AimingSpeedEffector
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2421401262250405884, guid: e5c39ae9452b48f429a31f10d9ea4c79,
+        type: 3}
       propertyPath: playerSettings.CrouchSpeedEffector
       value: 0.6
       objectReference: {fileID: 0}
@@ -1103,6 +1108,11 @@ PrefabInstance:
         type: 3}
       propertyPath: playerSettings.FallingSpeedEffector
       value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2421401262250405884, guid: e5c39ae9452b48f429a31f10d9ea4c79,
+        type: 3}
+      propertyPath: playerSettings.AimingSensitivityEffector
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 3641517975924804883, guid: e5c39ae9452b48f429a31f10d9ea4c79,
         type: 3}

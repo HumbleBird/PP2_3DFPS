@@ -21,6 +21,8 @@ public static class scr_Models
         public float ViewXSensitivity = 10;
         public float ViewYSensitivity = 10;
 
+        public float AimingSensitivityEffector;
+
         public bool ViewXInverted;
         public bool ViewYInverted;
 
@@ -48,6 +50,7 @@ public static class scr_Models
         public float CrouchSpeedEffector;
         public float ProneSpeedEffector;
         public float FallingSpeedEffector;
+        public float AimingSpeedEffector;
 
         [Header("Is Grounded / Falling")]
         public float isGroundedRadius;
