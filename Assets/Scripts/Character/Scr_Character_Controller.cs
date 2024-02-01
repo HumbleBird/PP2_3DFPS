@@ -69,6 +69,9 @@ public class Scr_Character_Controller : MonoBehaviour
     [HideInInspector]
     public bool isFalling;
 
+    [Header("Animing In")]
+    public bool isAimingIn;
+
     private void Awake()
     {
         defaultInput = new DefaultInput();
@@ -80,6 +83,9 @@ public class Scr_Character_Controller : MonoBehaviour
         defaultInput.Characer.Prone.performed += e => Prone();
         defaultInput.Characer.Sprint.performed += e => ToggleSprint();
         defaultInput.Characer.SprintReleased.performed += e => StopSprint();
+
+        defaultInput.Weapon.Fire2Pressed.performed += e => AimingInPressed();
+        defaultInput.Weapon.Fire2Released.performed += e => AimingInReleased();
 
         defaultInput.Enable();
 
@@ -109,6 +115,7 @@ public class Scr_Character_Controller : MonoBehaviour
         CalculateMovement();
         CaculateJump();
         CalculateStance();
+        CalculateAimingIn();
     }
 
     private void SetIsGrounded()
@@ -302,6 +309,27 @@ public class Scr_Character_Controller : MonoBehaviour
         {
             isSprinting = false;
         }
+    }
+
+    private void AimingInPressed()
+    {
+        isAimingIn = true;
+    }
+    
+
+    private void AimingInReleased()
+    {
+        isAimingIn = false;
+    }
+
+    private void CalculateAimingIn()
+    {
+        if(!currentWeapon)
+        {
+            return;
+        }
+
+        currentWeapon.isAimingIn = isAimingIn;
     }
 
     private void OnDrawGizmos()
