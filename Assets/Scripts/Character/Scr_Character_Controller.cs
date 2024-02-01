@@ -69,6 +69,17 @@ public class Scr_Character_Controller : MonoBehaviour
     [HideInInspector]
     public bool isFalling;
 
+    [Header("Leaning")]
+    public Transform leanPivot;
+    private float currentLean;
+    private float targetLean;
+    public float leanAngle;
+    public float leanSmoothing;
+    private float leanVelocity;
+
+    private bool isLeaningLeft;
+    private bool isLeaningRight;
+
     [Header("Animing In")]
     public bool isAimingIn;
 
@@ -83,6 +94,11 @@ public class Scr_Character_Controller : MonoBehaviour
         defaultInput.Characer.Prone.performed += e => Prone();
         defaultInput.Characer.Sprint.performed += e => ToggleSprint();
         defaultInput.Characer.SprintReleased.performed += e => StopSprint();
+
+        defaultInput.Characer.LeanLeftPressd.performed += e => isLeaningLeft = true;
+        defaultInput.Characer.LeanLeftReleased.performed += e => isLeaningLeft = false;
+        defaultInput.Characer.LeanRightPressed.performed += e => isLeaningRight = true;
+        defaultInput.Characer.LeanRightReleased.performed += e => isLeaningRight = false;
 
         defaultInput.Weapon.Fire2Pressed.performed += e => AimingInPressed();
         defaultInput.Weapon.Fire2Released.performed += e => AimingInReleased();
@@ -116,6 +132,7 @@ public class Scr_Character_Controller : MonoBehaviour
         CaculateJump();
         CalculateStance();
         CalculateAimingIn();
+        CalculateLeaning();
     }
 
     private void SetIsGrounded()
@@ -334,6 +351,29 @@ public class Scr_Character_Controller : MonoBehaviour
         }
 
         currentWeapon.isAimingIn = isAimingIn;
+    }
+
+
+    private void CalculateLeaning()
+    {
+        if(isLeaningLeft)
+        {
+            targetLean = leanAngle;
+
+        }
+        else if (isLeaningRight)
+        {
+            targetLean = -leanAngle;
+
+        }
+        else
+        {
+            targetLean = 0;
+        }
+
+        currentLean = Mathf.SmoothDamp(currentLean, targetLean, ref leanVelocity, leanSmoothing);
+
+        leanPivot.localRotation = Quaternion.Euler(new Vector3(0, 0, currentLean));
     }
 
     private void OnDrawGizmos()
