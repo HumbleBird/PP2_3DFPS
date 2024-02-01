@@ -134,14 +134,36 @@ public class Scr_Character_Controller : MonoBehaviour
         var verticalSpeed = playerSettings.WalkingForwardSpeed;
         var horizontalSpeed = playerSettings.WalkingStrafeSpeed;
 
+        // Sprint
         if(isSprinting)
         {
             verticalSpeed = playerSettings.RunningForwardSpeed;
             horizontalSpeed = playerSettings.RunningStrafeSpeed;
         }
 
+        if(!characterController.isGrounded)
+        {
+            playerSettings.SpeedEffector = playerSettings.FallingSpeedEffector;
+        }
+        else if (playerStance == PlayerStance.Crouch)
+        {
+            playerSettings.SpeedEffector = playerSettings.CrouchSpeedEffector;
+        }
+        else if (playerStance == PlayerStance.Crouch)
+        {
+            playerSettings.SpeedEffector = playerSettings.ProneSpeedEffector;
+        }
+        else
+        {
+            playerSettings.SpeedEffector = 1;
+        }
 
-        newMovementSpeed =Vector3.SmoothDamp(newMovementSpeed,  new Vector3(horizontalSpeed * input_Movement.x * Time.deltaTime, 0, verticalSpeed * input_Movement.y * Time.deltaTime), ref newMovementSpeedVelocity, playerSettings.MovementSmoothing);
+        verticalSpeed *= playerSettings.SpeedEffector;
+        horizontalSpeed *= playerSettings.SpeedEffector;
+
+        newMovementSpeed =Vector3.SmoothDamp(newMovementSpeed,  
+            new Vector3(horizontalSpeed * input_Movement.x * Time.deltaTime, 0, verticalSpeed * input_Movement.y * Time.deltaTime), 
+            ref newMovementSpeedVelocity, characterController.isGrounded ? playerSettings.MovementSmoothing : playerSettings.FallingSmoothing);
         var MovementSpeed = transform.TransformDirection(newMovementSpeed);
 
         if(playerGravity > grabityMin)
@@ -170,6 +192,12 @@ public class Scr_Character_Controller : MonoBehaviour
     {
         if(!characterController.isGrounded || playerStance == PlayerStance.Prone)
         {
+            if (StanceCheck(playerStandeStance.StanceCollider.height))
+            {
+                return;
+            }
+
+            playerStance = PlayerStance.Stande;
             return;
         }
 

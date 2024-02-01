@@ -41,6 +41,13 @@ public static class scr_Models
         [Header("Jumping")]
         public float JumpingHeight = 0.4f;
         public float JumpingFalloff = 0.1f;
+        public float FallingSmoothing;
+
+        [Header("Speed Effectors")]
+        public float SpeedEffector = 1;
+        public float CrouchSpeedEffector;
+        public float ProneSpeedEffector;
+        public float FallingSpeedEffector;
     }
 
     [Serializable]
