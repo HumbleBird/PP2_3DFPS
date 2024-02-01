@@ -10,7 +10,8 @@ public class Scr_Character_Controller : MonoBehaviour
     CharacterController characterController;
     private DefaultInput defaultInput;
     private Vector2 input_Movement;
-    private Vector2 input_View;
+    [HideInInspector]
+    public Vector2 input_View;
 
     private Vector3 newCameraRotation;
     private Vector3 newCharacterRotation;
@@ -58,6 +59,9 @@ public class Scr_Character_Controller : MonoBehaviour
     private Vector3 newMovementSpeed;
     private Vector3 newMovementSpeedVelocity;
 
+    [Header("Weapon")]
+    public scr_WeaponController currentWeapon;
+
     private void Awake()
     {
         defaultInput = new DefaultInput();
@@ -80,6 +84,11 @@ public class Scr_Character_Controller : MonoBehaviour
         cameraHeight = cameraHolder.localPosition.y;
 
         playerStance = PlayerStance.Stande;
+
+        if(currentWeapon)
+        {
+            currentWeapon.Initialise(this);
+        }
     }
 
 
