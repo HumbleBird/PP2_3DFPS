@@ -986,8 +986,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2421401262250405884, guid: e5c39ae9452b48f429a31f10d9ea4c79,
         type: 3}
+      propertyPath: groundMask.m_Bits
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 2421401262250405884, guid: e5c39ae9452b48f429a31f10d9ea4c79,
+        type: 3}
       propertyPath: playerSettings.FallingSmoothing
       value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2421401262250405884, guid: e5c39ae9452b48f429a31f10d9ea4c79,
+        type: 3}
+      propertyPath: playerSettings.isGroundedRadius
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 2421401262250405884, guid: e5c39ae9452b48f429a31f10d9ea4c79,
         type: 3}
@@ -1018,6 +1028,11 @@ PrefabInstance:
         type: 3}
       propertyPath: playerSettings.FallingSpeedEffector
       value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3641517975924804883, guid: e5c39ae9452b48f429a31f10d9ea4c79,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7862602466847738953, guid: e5c39ae9452b48f429a31f10d9ea4c79,
         type: 3}

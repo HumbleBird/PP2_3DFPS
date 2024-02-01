@@ -28,6 +28,11 @@ public class scr_WeaponController : MonoBehaviour
     Vector3 targetWeaponMovementRotation;
     Vector3 targetWeaponMovementRotationVelocity;
 
+    private bool isGroundedTrigger;
+    private bool isFallingTrigger;
+
+    private float fallingDelay;
+
     private void Start()
     {
         newWeaponRotation = transform.localRotation.eulerAngles;
@@ -48,12 +53,18 @@ public class scr_WeaponController : MonoBehaviour
 
         CalculateWeaponRotation();
         SetWeaponAnimations();
+
+        
+    }
+
+    public void TriggerJump()
+    {
+        isGroundedTrigger = false;
+        weaponAnimator.SetTrigger("Jump");
     }
 
     private void CalculateWeaponRotation()
     {
-        // Animation
-        weaponAnimator.speed = characterController.weaponAnimationSpeed;
 
         // Weapon Sway
         targetWeaponRotation.y += settings.SwayAmount * (settings.SwayXInverted ? -characterController.input_View.x : characterController.input_View.x) * Time.deltaTime;
@@ -79,6 +90,31 @@ public class scr_WeaponController : MonoBehaviour
 
     private void SetWeaponAnimations()
     {
+        if (isGroundedTrigger)
+        {
+            fallingDelay = 0;
+        }
+        else
+        {
+            fallingDelay += Time.deltaTime;
+        }
+
+        if (characterController.isGrounded && !isGroundedTrigger && fallingDelay > 0.1f)
+        {
+            Debug.Log("Trigger Land");
+            weaponAnimator.SetTrigger("Land");
+            isGroundedTrigger = true;
+        }
+        else if (!characterController.isGrounded && isGroundedTrigger)
+        {
+            Debug.Log("Trigger Falling");
+            weaponAnimator.SetTrigger("Falling");
+            isGroundedTrigger = false;
+        }
+
         weaponAnimator.SetBool("isSprinting", characterController.isSprinting);
+        weaponAnimator.SetFloat("WeaponAnimationSpeed", characterController.weaponAnimationSpeed);
+
+
     }
 }
