@@ -46,6 +46,12 @@ public class scr_WeaponController : MonoBehaviour
             return;
         }
 
+        CalculateWeaponRotation();
+        SetWeaponAnimations();
+    }
+
+    private void CalculateWeaponRotation()
+    {
         // Animation
         weaponAnimator.speed = characterController.weaponAnimationSpeed;
 
@@ -55,7 +61,7 @@ public class scr_WeaponController : MonoBehaviour
 
         targetWeaponRotation.x = Mathf.Clamp(targetWeaponRotation.x, -settings.SwayClampX, settings.SwayClampX);
         targetWeaponRotation.y = Mathf.Clamp(targetWeaponRotation.y, -settings.SwayClampY, settings.SwayClampY);
-        targetWeaponRotation.z = targetWeaponRotation.y ;
+        targetWeaponRotation.z = targetWeaponRotation.y;
 
         targetWeaponRotation = Vector3.SmoothDamp(targetWeaponRotation, Vector3.zero, ref targetWeaponRotationVelocity, settings.SwayResetSmoothing);
         newWeaponRotation = Vector3.SmoothDamp(newWeaponRotation, targetWeaponRotation, ref newWeaponRotationVelocity, settings.SwaySmoothing);
@@ -71,5 +77,8 @@ public class scr_WeaponController : MonoBehaviour
         transform.localRotation = Quaternion.Euler(newWeaponRotation + newWeaponMovementRotation);
     }
 
-
+    private void SetWeaponAnimations()
+    {
+        weaponAnimator.SetBool("isSprinting", characterController.isSprinting);
+    }
 }

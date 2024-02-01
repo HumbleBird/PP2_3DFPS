@@ -54,7 +54,7 @@ public class Scr_Character_Controller : MonoBehaviour
     private float stanceCapsuleHeight;
     private float stanceCapsuleHeightVelocity;
 
-    private bool isSprinting;
+    public bool isSprinting;
 
 
     private Vector3 newMovementSpeed;
