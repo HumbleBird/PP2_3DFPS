@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using static scr_Models;
@@ -13,6 +14,8 @@ public class scr_WeaponController : MonoBehaviour
 
     [Header("Settings")]
     public WeaponSettginsModel settings;
+    public GameObject bulletPrefab;
+    public Transform bulletSpawn;
 
     bool isInitialised;
 
@@ -52,9 +55,18 @@ public class scr_WeaponController : MonoBehaviour
     [HideInInspector]
     public bool isAimingIn;
 
+    [Header("Shooting")]
+    public float rateOfFire;
+    private float currentFireRate;
+    public List<WeaponFireType> allowFireTypes;
+    public WeaponFireType currentFireType;
+    [HideInInspector]
+    public bool isShooting;
+
     private void Start()
     {
         newWeaponRotation = transform.localRotation.eulerAngles;
+        currentFireType = allowFireTypes.First();
     }
 
     public void Initialise(Scr_Character_Controller controller)
@@ -74,6 +86,7 @@ public class scr_WeaponController : MonoBehaviour
         SetWeaponAnimations();
         CalculateWeaponSway();
         CalculateAimingIn();
+        CalculateShooting();
     }
 
     private void CalculateAimingIn()
@@ -82,7 +95,7 @@ public class scr_WeaponController : MonoBehaviour
 
         if(isAimingIn)
         {
-            targetPosition = characterController.cameraHolder.transform.position + (weaponSwayObject.transform.position - sightTarget.position) + (characterController.cameraHolder.transform.forward * sightOffset);
+            targetPosition = characterController.camera.transform.position + (weaponSwayObject.transform.position - sightTarget.position) + (characterController.camera.transform.forward * sightOffset);
         }
 
         weaponSwayPosition = weaponSwayObject.transform.position;
@@ -169,5 +182,23 @@ public class scr_WeaponController : MonoBehaviour
     private Vector3 LisaajousCurve(float Time, float A, float B)
     {
         return new Vector3(Mathf.Sin(Time), A * Mathf.Sin(B * Time + Mathf.PI));
+    }
+
+    private void CalculateShooting()
+    {
+        if(isShooting)
+        {
+            Shoot();
+
+            if(currentFireType == WeaponFireType.SemiAuto)
+            {
+                isShooting = false;
+            }
+        }
+    }
+
+    private void Shoot()
+    {
+        var bullet = Instantiate(bulletPrefab, bulletSpawn);
     }
 }

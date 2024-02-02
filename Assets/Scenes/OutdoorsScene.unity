@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2260.9495, g: 2402.2815, b: 3499.5435, a: 1}
+  m_IndirectSpecularColor: {r: 2262.0686, g: 2403.5237, b: 3501.0435, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -557,6 +557,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &522021601
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 522021602}
+  m_Layer: 0
+  m_Name: BulletSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &522021602
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522021601}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.06800008, y: 0.054199874, z: 0.17139998}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1499082624}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &584357950
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,6 +631,9 @@ MonoBehaviour:
     MovementSwayYUInverted: 0
     MovementSwayXUInverted: 0
     MovementSwaySmoothing: 0.2
+  bulletPrefab: {fileID: 4139597234633868776, guid: e59247e6ab8d4dc4c8b158cf8c5fdd0e,
+    type: 3}
+  bulletSpawn: {fileID: 522021602}
   weaponSwayObject: {fileID: 233137426}
   swayAmountA: 1
   swayAmountB: 2
@@ -611,6 +645,10 @@ MonoBehaviour:
   sightOffset: 0.16
   aimingInTime: 0.16
   isAimingIn: 0
+  rateOfFire: 0
+  allowFireTypes: 00000000
+  currentFireType: 0
+  isShooting: 0
 --- !u!4 &584357952
 Transform:
   m_ObjectHideFlags: 0
@@ -980,6 +1018,7 @@ Transform:
   m_Children:
   - {fileID: 1439155618}
   - {fileID: 395833862}
+  - {fileID: 522021602}
   m_Father: {fileID: 233137426}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1788223973
@@ -1351,6 +1390,7 @@ MonoBehaviour:
   input_Movement: {x: 0, y: 0}
   input_View: {x: 0, y: 0}
   cameraHolder: {fileID: 1787725970531116753}
+  camera: {fileID: 3777802671100615717}
   feetTransform: {fileID: 5434986459756542133}
   playerSettings:
     ViewXSensitivity: 10

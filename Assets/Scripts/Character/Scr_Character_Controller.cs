@@ -19,6 +19,7 @@ public class Scr_Character_Controller : MonoBehaviour
 
     [Header("References")]
     public Transform cameraHolder;
+    public Transform camera;
     public Transform feetTransform;
 
     [Header("Settings")]
@@ -102,6 +103,9 @@ public class Scr_Character_Controller : MonoBehaviour
 
         defaultInput.Weapon.Fire2Pressed.performed += e => AimingInPressed();
         defaultInput.Weapon.Fire2Released.performed += e => AimingInReleased();
+
+        defaultInput.Weapon.Fire1Pressed.performed += e => ShootingPressed();
+        defaultInput.Weapon.Fire1Released.performed += e => ShootingReleased();
 
         defaultInput.Enable();
 
@@ -374,6 +378,22 @@ public class Scr_Character_Controller : MonoBehaviour
         currentLean = Mathf.SmoothDamp(currentLean, targetLean, ref leanVelocity, leanSmoothing);
 
         leanPivot.localRotation = Quaternion.Euler(new Vector3(0, 0, currentLean));
+    }
+
+    private void ShootingPressed()
+    {
+        if(currentWeapon)
+        {
+            currentWeapon.isShooting = true;
+        }
+    }
+
+    private void ShootingReleased()
+    {
+        if(currentWeapon)
+        {
+            currentWeapon.isShooting = false;
+        }
     }
 
     private void OnDrawGizmos()
