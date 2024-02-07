@@ -6,16 +6,20 @@ namespace EvolveGames
 {
     public class MENU : MonoBehaviour
     {
+        public PlayerManager player;
+
         [Header("MENU")]
         [SerializeField] GameObject MenuPanel;
         [SerializeField] Animator ani;
-        [SerializeField] PlayerController Player;
-        [Header("Input")]
-        [SerializeField] KeyCode BackKey = KeyCode.Escape;
+        [SerializeField] PlayerManager Player;
+
+
         private void Update()
         {
-            if (Input.GetKeyDown(BackKey))
+            if (player.inputHandler.m_ESC_Input)
             {
+                player.inputHandler.m_ESC_Input = false;
+
                 if (MenuPanel.activeInHierarchy)
                 {
                     MenuPanel.SetActive(false);

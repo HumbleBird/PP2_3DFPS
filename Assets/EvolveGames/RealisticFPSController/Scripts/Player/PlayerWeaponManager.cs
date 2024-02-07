@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 namespace EvolveGames
 {
-    public class ItemChange : MonoBehaviour
+    public class PlayerWeaponManager : MonoBehaviour
     {
+        PlayerManager player;
+
         [Header("Item Change")]
         [SerializeField] public Animator ani;
         [SerializeField] Image ItemCanvasLogo;
@@ -18,6 +20,11 @@ namespace EvolveGames
         int ChangeItemInt;
         [HideInInspector] public bool DefiniteHide;
         bool ItemChangeLogo;
+
+        private void Awake()
+        {
+            player = GetComponent<PlayerManager>();
+        }
 
         private void Start()
         {
@@ -34,20 +41,29 @@ namespace EvolveGames
         }
         private void Update()
         {
-            if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+            if (player.inputHandler.mouseWheel > 0.1f)
             {
+                Debug.Log(player.inputHandler.mouseWheel);
+                player.inputHandler.mouseWheel = 0;
                 ItemIdInt++;
+
             }
 
-            if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+            if (player.inputHandler.mouseWheel < -0.1f)
             {
+                Debug.Log(player.inputHandler.mouseWheel);
+                player.inputHandler.mouseWheel = 0;
                 ItemIdInt--;
             }
 
-            if(Input.GetKeyDown(KeyCode.H))
+            if(player.inputHandler.m_Hide_Input)
             {
-                if (ani.GetBool("Hide")) Hide(false);
-                else Hide(true);
+                player.inputHandler.m_Hide_Input = false;
+
+                if (ani.GetBool("Hide")) 
+                    Hide(false);
+                else 
+                    Hide(true);
             }
 
             if (ItemIdInt < 0) ItemIdInt = LoopItems ? MaxItems : 0;

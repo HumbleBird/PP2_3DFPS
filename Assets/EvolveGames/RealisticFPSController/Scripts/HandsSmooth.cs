@@ -6,6 +6,8 @@ namespace EvolveGames
 {
     public class HandsSmooth : MonoBehaviour
     {
+        PlayerManager player;
+
         [Header("HandsSmooth")]
         [SerializeField] CharacterController CharakterC;
         [SerializeField, Range(1, 10)] float smooth = 4f;
@@ -22,13 +24,15 @@ namespace EvolveGames
         [SerializeField, Range(0.1f, 20)] float RotationCroughSmooth = 15.0f;
         [SerializeField, Range(5f, 50)] float RotationCroughMultipler = 18.0f;
 
-        [Header("Input")]
-        [SerializeField] KeyCode CroughKey = KeyCode.LeftControl;
-
         float CroughRotation;
         Vector3 InstallPosition;
         Quaternion InstallRotation;
-        
+
+        private void Awake()
+        {
+            player = GetComponentInParent<PlayerManager>();
+        }
+
 
         private void Start()
         {
@@ -38,10 +42,10 @@ namespace EvolveGames
         private void Update()
         {
 
-            float InputX = -Input.GetAxis("Mouse X");
-            float InputY = -Input.GetAxis("Mouse Y");
-            float horizontal = -Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical");
+            float InputX = -player.inputHandler.mouseX;
+            float InputY = -player.inputHandler.mouseY;
+            float horizontal = -player.inputHandler.horizontal;
+            float vertical =  player.inputHandler.vertical;
 
             float moveX = Mathf.Clamp(InputX * amount, -maxAmount, maxAmount);
             float moveY = Mathf.Clamp(InputY * amount, -maxAmount, maxAmount);
@@ -54,8 +58,10 @@ namespace EvolveGames
 
             float TiltX = Mathf.Clamp(InputX * RotationAmount, -MaxRotationAmount, MaxRotationAmount);
             float TiltY = Mathf.Clamp(InputY * RotationSmooth, -MaxRotationAmount, MaxRotationAmount);
-            if (EnabledCroughRotation && Input.GetKey(CroughKey)) CroughRotation = Mathf.Lerp(CroughRotation, RotationCroughMultipler, RotationCroughSmooth * Time.deltaTime);
-            else CroughRotation = Mathf.Lerp(CroughRotation, 0f, RotationCroughSmooth * Time.deltaTime);
+            if (EnabledCroughRotation && player.inputHandler.m_Crouch_Input) 
+                CroughRotation = Mathf.Lerp(CroughRotation, RotationCroughMultipler, RotationCroughSmooth * Time.deltaTime);
+            else 
+                CroughRotation = Mathf.Lerp(CroughRotation, 0f, RotationCroughSmooth * Time.deltaTime);
             Vector3 vector = new Vector3(Mathf.Max(vertical * 0.4f, 0) * RotationMovementMultipler, 0, horizontal * RotationMovementMultipler);
             Vector3 finalRotation = new Vector3(-TiltY, 0, TiltX + CroughRotation) + vector;
 

@@ -23,11 +23,16 @@ namespace EvolveGames
         Vector3 StartRot;
         Vector3 FinalPos;
         Vector3 FinalRot;
-        CharacterController player;
+        CharacterController charactercontroller;
+        public PlayerManager player;
+
+
         private void Awake()
         {
-            player = GetComponentInParent<CharacterController>();
-            if (player.transform.GetComponent<PlayerController>() != null) ToggleSpeed = player.transform.GetComponent<PlayerController>().CroughSpeed * 1.5f;
+            player = GetComponentInParent<PlayerManager>();
+
+            charactercontroller = GetComponentInParent<CharacterController>();
+            if (charactercontroller.transform.GetComponent<PlayerManager>() != null) ToggleSpeed = charactercontroller.transform.GetComponent<PlayerManager>().playerLocomotionManager.CroughSpeed * 1.5f;
             else ToggleSpeed = 1.5f;
             AmountValue = Amount;
             StartPos = transform.localPosition;
@@ -37,17 +42,24 @@ namespace EvolveGames
         private void Update()
         {
             if (!Enabled) return;
-            float speed = new Vector3(player.velocity.x, 0, player.velocity.z).magnitude;
+            float speed = new Vector3(charactercontroller.velocity.x, 0, charactercontroller.velocity.z).magnitude;
             Reset();
-            if (speed > ToggleSpeed && player.isGrounded)
+            if (speed > ToggleSpeed && charactercontroller.isGrounded)
             {
                 FinalPos += HeadBobMotion();
                 FinalRot += new Vector3(-HeadBobMotion().z, 0, HeadBobMotion().x) * RotationMultipler * 10;
             }
             else if (speed > ToggleSpeed) FinalPos += HeadBobMotion() / 2f;
 
-            if (Input.GetKeyDown(KeyCode.LeftShift)) AmountValue = Amount * SprintAmount;
-            else if (Input.GetKeyUp(KeyCode.LeftShift)) AmountValue = Amount / SprintAmount;
+            if(player.inputHandler.m_Sprint_Input)
+            {
+                AmountValue = Amount * SprintAmount;
+            }
+            else
+            {
+                AmountValue = Amount / SprintAmount;
+            }
+
             transform.localPosition = Vector3.Lerp(transform.localPosition, FinalPos, Smooth * Time.deltaTime);
             if (EnabledRotationMovement) transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(FinalRot), Smooth / 1.5f * Time.deltaTime);
 
