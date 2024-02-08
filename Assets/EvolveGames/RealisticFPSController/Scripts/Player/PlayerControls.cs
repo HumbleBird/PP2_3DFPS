@@ -171,7 +171,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""785571fa-9fe6-4b21-8693-03f66908ba4b"",
                     ""path"": ""<Keyboard>/c"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": ""Hold(duration=0.1,pressPoint=0.15)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Crouch"",

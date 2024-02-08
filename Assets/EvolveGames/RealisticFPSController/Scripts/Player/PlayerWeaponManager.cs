@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace EvolveGames
-{
     public class PlayerWeaponManager : MonoBehaviour
     {
         PlayerManager player;
@@ -43,7 +41,6 @@ namespace EvolveGames
         {
             if (player.inputHandler.mouseWheel > 0.1f)
             {
-                Debug.Log(player.inputHandler.mouseWheel);
                 player.inputHandler.mouseWheel = 0;
                 ItemIdInt++;
 
@@ -51,7 +48,6 @@ namespace EvolveGames
 
             if (player.inputHandler.mouseWheel < -0.1f)
             {
-                Debug.Log(player.inputHandler.mouseWheel);
                 player.inputHandler.mouseWheel = 0;
                 ItemIdInt--;
             }
@@ -123,5 +119,3 @@ namespace EvolveGames
             }
         }
     }
-
-}
