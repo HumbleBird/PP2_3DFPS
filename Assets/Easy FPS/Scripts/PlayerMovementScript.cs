@@ -265,10 +265,10 @@ public class PlayerMovementScript : MonoBehaviour {
 		Debug.DrawRay (ray9.origin, ray9.direction, Color.yellow);
 
 		if (GetComponent<GunInventory> ().currentGun) {
-			if (GetComponent<GunInventory> ().currentGun.GetComponent<PlayerWeaponManager> ().meeleAttack == false) {
+			if (GetComponent<GunInventory> ().currentGun.GetComponent<GunScript> ().meeleAttack == false) {
 				been_to_meele_anim = false;
 			}
-			if (GetComponent<GunInventory> ().currentGun.GetComponent<PlayerWeaponManager> ().meeleAttack == true && been_to_meele_anim == false) {
+			if (GetComponent<GunInventory> ().currentGun.GetComponent<GunScript> ().meeleAttack == true && been_to_meele_anim == false) {
 				been_to_meele_anim = true;
 				//	if (isRunning == false) {
 				StartCoroutine ("MeeleAttackWeaponHit");
@@ -309,7 +309,7 @@ public class PlayerMovementScript : MonoBehaviour {
 	void InstantiateBlood (RaycastHit _hitPos,bool swordHitWithGunOrNot) {		
 
 		if (currentWeapo == "gun") {
-			PlayerWeaponManager.HitMarkerSound ();
+            GunScript.HitMarkerSound ();
 
 			if (_hitSound)
 				_hitSound.Play ();

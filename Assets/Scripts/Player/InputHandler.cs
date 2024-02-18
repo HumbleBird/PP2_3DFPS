@@ -26,9 +26,8 @@ public class InputHandler : MonoBehaviour
     public bool m_TapFire1_Input;
     public bool m_HoldFire1_Input;
     public bool m_TapFire2_Input;
-    public bool m_HoldFire3_Input;
+    public bool m_HoldFire2_Input;
     public bool m_Reload_Input;
-    public bool m_ChangeWeapon_Input;
     public bool m_Hide_Input;
 
     [Header("UI")]
@@ -51,7 +50,6 @@ public class InputHandler : MonoBehaviour
             inputActions = new PlayerControls();
             inputActions.PlayerMovement.Movement.performed += inputActions => movementInput = inputActions.ReadValue<Vector2>();
             inputActions.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
-            inputActions.PlayerActions.ChangeWeaponMouseScrool.performed += i => mouseWheel = i.ReadValue<float>();
 
             inputActions.PlayerMovement.Crouch.performed += i =>   m_Crouch_Input             = true;
             inputActions.PlayerMovement.Crouch.canceled += i =>   m_Crouch_Input             = false;
@@ -66,10 +64,10 @@ public class InputHandler : MonoBehaviour
             inputActions.PlayerActions.HoldFire1.performed += i =>     m_HoldFire1_Input       = true;
             inputActions.PlayerActions.HoldFire1.canceled += i =>     m_HoldFire1_Input       = false;
             inputActions.PlayerActions.TapFire2.performed += i =>      m_TapFire2_Input       = true;
-            inputActions.PlayerActions.HoldFire2.performed += i =>     m_HoldFire3_Input       = true;
-            inputActions.PlayerActions.HoldFire2.canceled += i =>     m_HoldFire3_Input       = false;
+            inputActions.PlayerActions.HoldFire2.performed += i =>     m_HoldFire2_Input       = true;
+            inputActions.PlayerActions.HoldFire2.canceled += i =>     m_HoldFire2_Input       = false;
             inputActions.PlayerActions.Reload.performed += i =>        m_Reload_Input       = true;
-            inputActions.PlayerActions.ChangeWeapon.performed += i => m_ChangeWeapon_Input        = true;
+            //inputActions.PlayerActions.ChangeWeapon.performed += i => m_ChangeWeapon_Input        = inputActions.ReadValue<Int>();
             inputActions.PlayerActions.Hide.performed += i => m_Hide_Input = true;
 
             inputActions.UI.ESC.performed += i => m_ESC_Input = true;
@@ -86,8 +84,15 @@ public class InputHandler : MonoBehaviour
     public void Update()
     {
         HandleMoveInput();
+        HandleReloadInput();
+        HandleChangeWeaponInput();
+        HandleLeftLeanInput();
+        HandleRightLeanInput();
+        HandleFire1Input();
+        HandleFire2Input();
+        HandleHideInput();
     }
-
+    
     public void HandleMoveInput()
     {
         horizontal = movementInput.x;
@@ -100,7 +105,6 @@ public class InputHandler : MonoBehaviour
             moveAmount = 0.5f;
 
     }
-
 
     public void HandleReloadInput()
     {
@@ -122,13 +126,29 @@ public class InputHandler : MonoBehaviour
 
     }
 
-    public void HandleInput()
+    public void HandleFire1Input()
     {
 
     }
 
     public void HandleFire2Input()
     {
+        if(m_HoldFire2_Input)
+        {
+            player.isAiming = true;
+        }
+        else
+        {
+            player.isAiming = false;
+        }
+    }
 
+    public void HandleHideInput()
+    {
+        if(m_Hide_Input == false && player.isInteracting == false)
+        {
+            m_Hide_Input = true;
+            player.isWeaponHiding = true;
+        }
     }
 }

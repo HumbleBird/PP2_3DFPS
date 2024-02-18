@@ -81,4 +81,13 @@ public class PlayerAnimatorManager : MonoBehaviour
         player.animator.SetFloat("Vertical", v, 0.1f, Time.deltaTime);
         player.animator.SetFloat("Horizontal", h, 0.1f, Time.deltaTime);
     }
+
+    public void PlayTargetAnimation(string targetAnim, bool isInteracting, bool canRoate = false, bool mirrorAnim = false, bool canRoll = false)
+    {
+        player.animator.applyRootMotion = isInteracting;
+        player.animator.SetBool("canRotate", canRoate);
+        player.animator.SetBool("isInteracting", isInteracting);
+        player.animator.SetBool("isMirrored", mirrorAnim);
+        player.animator.CrossFade(targetAnim, 0.2f);
+    }
 }

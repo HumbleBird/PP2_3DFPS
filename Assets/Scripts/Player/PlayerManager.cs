@@ -19,6 +19,7 @@ public class PlayerManager : MonoBehaviour
     public InputHandler inputHandler;
 
     [Header("Flag")]
+    public bool isInteracting = false;
     public bool canMove = true;
     public bool CanRunning = true;
     public bool isRunning = false;
@@ -30,6 +31,7 @@ public class PlayerManager : MonoBehaviour
     public bool WallDistance;
     [SerializeField] public bool isGrounded { get { return characterController.isGrounded; } }
     public bool isAiming = false;
+    public bool isWeaponHiding = false;
 
     [SerializeField, Range(0.1f, 5)] float HideDistance = 1.5f;
     [SerializeField] int LayerMaskInt = 1;
@@ -67,6 +69,8 @@ public class PlayerManager : MonoBehaviour
 
         // Animator Bool
         animator.SetBool("isCrouching", isCrouching);
+        animator.SetBool("isAiming", isAiming);
+
     }
 
     private void OnTriggerEnter(Collider other)

@@ -272,15 +272,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "ChangeWeaponMouseScrool",
-                    "type": "Value",
-                    "id": "c467809c-80b3-4741-9ffc-807a328c8624",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "Hide",
                     "type": "Button",
                     "id": "1215eea7-ddb5-4b13-88a3-7fd55623c955",
@@ -306,7 +297,7 @@
                     "name": "",
                     "id": "c7b74f90-d184-47f9-a493-d18e8fc4655c",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "Hold",
+                    "interactions": "Hold(duration=0.1,pressPoint=0.15)",
                     "processors": "",
                     "groups": "",
                     "action": "HoldFire1",
@@ -317,7 +308,7 @@
                     "name": "",
                     "id": "f7028f6d-1705-475e-b20e-9c8bcb9fdd83",
                     "path": "<Mouse>/rightButton",
-                    "interactions": "Hold",
+                    "interactions": "Hold(duration=0.1,pressPoint=0.15)",
                     "processors": "",
                     "groups": "",
                     "action": "HoldFire2",
@@ -351,7 +342,7 @@
                     "id": "353fb153-ee45-4b31-b0f5-33c1136a4f2a",
                     "path": "<Keyboard>/1",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "Scale",
                     "groups": "",
                     "action": "ChangeWeapon",
                     "isComposite": false,
@@ -398,17 +389,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Hide",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a2a27d58-bf82-4067-96a0-737e310ff094",
-                    "path": "<Mouse>/scroll/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ChangeWeaponMouseScrool",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

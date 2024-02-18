@@ -7,6 +7,8 @@ public class Weapon : MonoBehaviour
     public Animator animator;
     public Transform BulletTransform;
     public Vector3 Aim;
+    public GunStyles m_EGunStyle;
+
 
     // Start is called before the first frame update
     void Start()
