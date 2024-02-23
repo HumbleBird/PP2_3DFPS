@@ -7,7 +7,39 @@ public class PlayerWeaponManager : MonoBehaviour
 {
     PlayerManager player;
 
+    [Header("Ref Transform")]
+    public Transform m_WeaponHolder;
     public Transform m_WeaponPivot;
+
+    [Header("Weapon")]
+    public Weapon m_CurrentWeapon;
+    public List<Weapon> m_PrimaryWeapons; // 주 무기
+    public List<Weapon> m_SecondWeapons; // 보조 무기
+    public List<Weapon> m_MeleeWeapons;
+    public List<Weapon> m_ThrowWeapons;
+    private int m_CurrentInt_PrimaryWeapon;
+    private int m_CurrentInt_SecondWeapon;
+    private int m_CurrentInt_MeleeWeapon;
+    private int m_CurrentInt_ThrowWeapon;
+
+
+    [Header("Bullet properties")]
+    [Tooltip("Preset value to tell with how many bullets will our waepon spawn aside.")]
+    public float bulletsIHave = 20;
+    [Tooltip("Preset value to tell with how much bullets will our waepon spawn inside rifle.")]
+    public float bulletsInTheGun = 5;
+    [Tooltip("Preset value to tell how much bullets can one magazine carry.")]
+    public float amountOfBulletsPerLoad = 5;
+
+
+
+
+
+
+
+
+
+
 
     [Header("Item Change")]
     [SerializeField] public Animator ani;
@@ -21,53 +53,60 @@ public class PlayerWeaponManager : MonoBehaviour
     int ChangeItemInt;
     [HideInInspector] public bool DefiniteHide;
     bool ItemChangeLogo;
-    
+
+    private Camera cameraComponent;
+    private Transform gunPlaceHolder;
+
+
+
+
+
+
     private void Awake()
     {
         player = GetComponent<PlayerManager>();
+        ani = GetComponent<Animator>();
     }
 
     private void Start()
     {
-        if (ani == null && GetComponent<Animator>()) ani = 
-                GetComponent<Animator>();
-        Color OpacityColor = ItemCanvasLogo.color;
-        OpacityColor.a = 0;
-        ItemCanvasLogo.color = OpacityColor;
-        ItemChangeLogo = false;
-        DefiniteHide = false;
-        ChangeItemInt = ItemIdInt;
-        ItemCanvasLogo.sprite = ItemLogos[ItemIdInt];
-        MaxItems = Items.Length - 1;
-        StartCoroutine(ItemChangeObject());
+        //Color OpacityColor = ItemCanvasLogo.color;
+        //OpacityColor.a = 0;
+        //ItemCanvasLogo.color = OpacityColor;
+        //ItemChangeLogo = false;
+        //DefiniteHide = false;
+        //ChangeItemInt = ItemIdInt;
+        //ItemCanvasLogo.sprite = ItemLogos[ItemIdInt];
+        //MaxItems = Items.Length - 1;
+        //StartCoroutine(ItemChangeObject());
     }
 
 
     /*
 	*Update loop calling for methods that are descriped below where they are initiated.
-	*+
 	*Calculation of weapon position when aiming or not aiming.
 	*/
+
     void FixedUpdate()
     {
-        if (ItemChangeLogo)
-        {
-            Color OpacityColor = ItemCanvasLogo.color;
-            OpacityColor.a = Mathf.Lerp(OpacityColor.a, 0, 20 * Time.deltaTime);
-            ItemCanvasLogo.color = OpacityColor;
-        }
-        else
-        {
-            Color OpacityColor = ItemCanvasLogo.color;
-            OpacityColor.a = Mathf.Lerp(OpacityColor.a, 1, 6 * Time.deltaTime);
-            ItemCanvasLogo.color = OpacityColor;
-        }
+        //if (ItemChangeLogo)
+        //{
+        //    Color OpacityColor = ItemCanvasLogo.color;
+        //    OpacityColor.a = Mathf.Lerp(OpacityColor.a, 0, 20 * Time.deltaTime);
+        //    ItemCanvasLogo.color = OpacityColor;
+        //}
+        //else
+        //{
+        //    Color OpacityColor = ItemCanvasLogo.color;
+        //    OpacityColor.a = Mathf.Lerp(OpacityColor.a, 1, 6 * Time.deltaTime);
+        //    ItemCanvasLogo.color = OpacityColor;
+        //}
     }
 
     private void Update()
     {
-        ItemChange();
-        HandleWeaponRotation();
+        //ItemChange();
+        //HandleWeaponRotation();
     }
 
     private void ItemChange()
@@ -109,7 +148,7 @@ public class PlayerWeaponManager : MonoBehaviour
     public void Hide(bool Hide)
     {
         DefiniteHide = Hide;
-        ani.SetBool("Hide", Hide);
+        //ani.SetBool("Hide", Hide);
     }
 
     IEnumerator ItemChangeObject()

@@ -12,7 +12,6 @@ public class PlayerManager : MonoBehaviour
     public PlayerWeaponManager playerWeaponManager;
     public PlayerAnimatorManager playerAnimatorManager;
 
-
     public CameraHandler cameraHandler;
 
     public Animator animator;
@@ -32,6 +31,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] public bool isGrounded { get { return characterController.isGrounded; } }
     public bool isAiming = false;
     public bool isWeaponHiding = false;
+    public bool isReloading = false;
 
     [SerializeField, Range(0.1f, 5)] float HideDistance = 1.5f;
     [SerializeField] int LayerMaskInt = 1;
@@ -71,6 +71,11 @@ public class PlayerManager : MonoBehaviour
         animator.SetBool("isCrouching", isCrouching);
         animator.SetBool("isAiming", isAiming);
 
+    }
+
+    private void LateUpdate()
+    {
+        
     }
 
     private void OnTriggerEnter(Collider other)

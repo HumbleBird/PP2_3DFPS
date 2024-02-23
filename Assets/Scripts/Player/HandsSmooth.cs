@@ -9,10 +9,10 @@ namespace EvolveGames
         PlayerManager player;
 
         [Header("HandsSmooth")]
-        [SerializeField] CharacterController CharakterC;
         [SerializeField, Range(1, 10)] float smooth = 4f;
         [SerializeField, Range(0.001f, 1)] float amount = 0.03f;
         [SerializeField, Range(0.001f, 1)] float maxAmount = 0.04f;
+
         [Header("Rotation")]
         [SerializeField, Range(1, 10)] float RotationSmooth = 4.0f;
         [SerializeField, Range(0.1f, 10)] float RotationAmount = 1.0f;
@@ -50,11 +50,9 @@ namespace EvolveGames
             float moveX = Mathf.Clamp(InputX * amount, -maxAmount, maxAmount);
             float moveY = Mathf.Clamp(InputY * amount, -maxAmount, maxAmount);
 
-            Vector3 finalPosition = new Vector3(moveX, moveY + -CharakterC.velocity.y / 60, 0);
+            Vector3 finalPosition = new Vector3(moveX, moveY + -player.characterController.velocity.y / 60, 0);
 
             transform.localPosition = Vector3.Lerp(transform.localPosition, finalPosition + InstallPosition, Time.deltaTime * smooth);
-
-
 
             float TiltX = Mathf.Clamp(InputX * RotationAmount, -MaxRotationAmount, MaxRotationAmount);
             float TiltY = Mathf.Clamp(InputY * RotationSmooth, -MaxRotationAmount, MaxRotationAmount);

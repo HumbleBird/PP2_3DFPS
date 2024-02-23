@@ -92,7 +92,13 @@ public class InputHandler : MonoBehaviour
         HandleFire2Input();
         HandleHideInput();
     }
-    
+
+    private void LateUpdate()
+    {
+            m_TapFire1_Input = false;
+
+    }
+
     public void HandleMoveInput()
     {
         horizontal = movementInput.x;
@@ -128,7 +134,15 @@ public class InputHandler : MonoBehaviour
 
     public void HandleFire1Input()
     {
+        if(m_TapFire1_Input || m_HoldFire1_Input)
+        {
+           // m_TapFire1_Input = false;
 
+            if(player.playerWeaponManager.m_CurrentWeapon != null)
+            {
+                player.playerWeaponManager.m_CurrentWeapon.WeaponPrimaryAction();
+            }
+        }
     }
 
     public void HandleFire2Input()

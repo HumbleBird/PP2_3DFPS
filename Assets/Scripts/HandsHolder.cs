@@ -6,14 +6,18 @@ namespace EvolveGames
 {
     public class HandsHolder : MonoBehaviour
     {
+        PlayerManager player;
+
         [Header("HandsHolder")]
         [SerializeField] bool Enabled = true;
+
         [Space, Header("Main")]
         [SerializeField, Range(0.0005f, 0.02f)] float Amount = 0.005f;
         [SerializeField, Range(1.0f, 3.0f)] float SprintAmount = 1.4f;
 
         [SerializeField, Range(5f, 20f)] float Frequency = 13.0f;
         [SerializeField, Range(50f, 10f)] float Smooth = 24.2f;
+
         [Header("RotationMovement")]
         [SerializeField] bool EnabledRotationMovement = true;
         [SerializeField, Range(0.1f, 10.0f)] float RotationMultipler = 6f;
@@ -23,17 +27,13 @@ namespace EvolveGames
         Vector3 StartRot;
         Vector3 FinalPos;
         Vector3 FinalRot;
-        CharacterController charactercontroller;
-        public PlayerManager player;
 
 
         private void Awake()
         {
             player = GetComponentInParent<PlayerManager>();
+            ToggleSpeed = player.playerLocomotionManager.CroughSpeed * 1.5f;
 
-            charactercontroller = GetComponentInParent<CharacterController>();
-            if (charactercontroller.transform.GetComponent<PlayerManager>() != null) ToggleSpeed = charactercontroller.transform.GetComponent<PlayerManager>().playerLocomotionManager.CroughSpeed * 1.5f;
-            else ToggleSpeed = 1.5f;
             AmountValue = Amount;
             StartPos = transform.localPosition;
             StartRot = transform.localRotation.eulerAngles;
@@ -42,9 +42,9 @@ namespace EvolveGames
         private void Update()
         {
             if (!Enabled) return;
-            float speed = new Vector3(charactercontroller.velocity.x, 0, charactercontroller.velocity.z).magnitude;
+            float speed = new Vector3(player.characterController.velocity.x, 0, player.characterController.velocity.z).magnitude;
             Reset();
-            if (speed > ToggleSpeed && charactercontroller.isGrounded)
+            if (speed > ToggleSpeed && player.isGrounded)
             {
                 FinalPos += HeadBobMotion();
                 FinalRot += new Vector3(-HeadBobMotion().z, 0, HeadBobMotion().x) * RotationMultipler * 10;

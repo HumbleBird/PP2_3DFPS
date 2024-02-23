@@ -2,23 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public abstract class Weapon : MonoBehaviour
 {
+    public PlayerManager player;
     public Animator animator;
-    public Transform BulletTransform;
-    public Vector3 Aim;
-    public GunStyles m_EGunStyle;
+    public CameraHandler cameraHandler;
 
-
-    // Start is called before the first frame update
-    void Start()
+    public virtual void Awake()
     {
-        
+        player = GetComponentInParent<PlayerManager>();
+        cameraHandler = Camera.main.GetComponentInParent<CameraHandler>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public abstract void WeaponPrimaryAction(); // 마우스 왼쪽 클릭
+    public abstract void WeaponSecondAction(); // 마우스 오른족 클릭
 }

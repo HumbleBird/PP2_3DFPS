@@ -57,7 +57,6 @@ public class GunScript : MonoBehaviour {
 
 	}
 
-
 	[HideInInspector]
 	public Vector3 currentGunPosition;
 	[Header("Gun Positioning")]

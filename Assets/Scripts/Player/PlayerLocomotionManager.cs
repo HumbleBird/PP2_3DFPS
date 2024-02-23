@@ -15,7 +15,6 @@ public class PlayerLocomotionManager : MonoBehaviour
     [SerializeField, Range(2, 20)] float RuningSpeed = 4.0f;
     [SerializeField, Range(0, 20)] float jumpSpeed = 6.0f;
     [SerializeField]  float installGravity;
-    [SerializeField]  float rotationX = 0;
     [SerializeField]  float movementDirectionY;
 
     [Space(20)]
@@ -29,13 +28,7 @@ public class PlayerLocomotionManager : MonoBehaviour
     float RunningValue;
     [SerializeField] float gravity = 20.0f;
     [SerializeField] float timeToRunning = 2.0f;
-    [HideInInspector] public float Lookvertical;
-    [HideInInspector] public float Lookhorizontal;
-    [SerializeField, Range(0.5f, 10)] float lookSpeed = 2.0f;
-    [SerializeField, Range(10, 120)] float lookXLimit = 80.0f;
-    [SerializeField] float RunningFOV = 65.0f;
-    [SerializeField] float SpeedToFOV = 4.0f;
-    float InstallFOV;
+
 
     [SerializeField] float StandHeight = 1.8f;
     [SerializeField] Vector3 Stand_CharacterCenter = new Vector3(0, 0.94f, 0);
@@ -54,7 +47,6 @@ public class PlayerLocomotionManager : MonoBehaviour
         installGravity = gravity;
         WalkingValue = walkingSpeed;
         StandHeight = player.characterController.height;
-        InstallFOV = player.cameraHandler.cam.fieldOfView;
 
     }
 
@@ -137,18 +129,7 @@ public class PlayerLocomotionManager : MonoBehaviour
     {
         if (player.canMove)
         {
-            Lookvertical = -player.inputHandler.mouseY;
-            Lookhorizontal = player.inputHandler.mouseX;
-
-            rotationX += Lookvertical * lookSpeed;
-            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            player.cameraHandler.cam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-            transform.rotation *= Quaternion.Euler(0, Lookhorizontal * lookSpeed, 0);
-
-            if (player.isRunning && player.Moving) 
-                player.cameraHandler.cam.fieldOfView = Mathf.Lerp(player.cameraHandler.cam.fieldOfView, RunningFOV, SpeedToFOV * Time.deltaTime);
-            else 
-                player.cameraHandler.cam.fieldOfView = Mathf.Lerp(player.cameraHandler.cam.fieldOfView, InstallFOV, SpeedToFOV * Time.deltaTime);
+            transform.rotation *= Quaternion.Euler(0, player.cameraHandler.Lookhorizontal * player.cameraHandler.lookSpeed, 0);
         }
     }
 }
