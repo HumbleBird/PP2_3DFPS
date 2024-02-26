@@ -147,13 +147,28 @@ public class InputHandler : MonoBehaviour
 
     public void HandleFire2Input()
     {
-        if(m_HoldFire2_Input)
+        if (!player.isGrounded ||
+            player.isRunning)
         {
-            player.isAiming = true;
+            m_HoldFire2_Input = false;
+            return;
+        }
+
+        if (player.playerWeaponManager.m_CurrentWeapon == null)
+            return;
+
+        if (m_HoldFire2_Input)
+        {
+                player.isAiming = true;
+            player.playerWeaponManager.m_CurrentWeapon.WeaponSecondAction();
         }
         else
         {
-            player.isAiming = false;
+            if (player.isAiming)
+            {
+                player.isAiming = false;
+                //player.cameraHandler.ResetAimCameraRotations();
+            }
         }
     }
 

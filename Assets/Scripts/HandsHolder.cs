@@ -41,9 +41,13 @@ namespace EvolveGames
 
         private void Update()
         {
-            if (!Enabled) return;
+            if (!Enabled) 
+                return;
+
             float speed = new Vector3(player.characterController.velocity.x, 0, player.characterController.velocity.z).magnitude;
+
             Reset();
+
             if (speed > ToggleSpeed && player.isGrounded)
             {
                 FinalPos += HeadBobMotion();
@@ -74,7 +78,9 @@ namespace EvolveGames
         }
         private void Reset()
         {
-            if (transform.localPosition == StartPos) return;
+            if (transform.localPosition == StartPos) 
+                return;
+
             FinalPos = Vector3.Lerp(FinalPos, StartPos, 1 * Time.deltaTime);
             FinalRot = Vector3.Lerp(FinalRot, StartRot, 1 * Time.deltaTime);
         }

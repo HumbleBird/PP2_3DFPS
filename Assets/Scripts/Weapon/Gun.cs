@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Define;
 
 public class Gun : Weapon
 {
@@ -21,7 +22,9 @@ public class Gun : Weapon
     private float waitTillNextFire;
 
     [HideInInspector]
-    public Vector3 currentGunPosition;
+    public Vector3 normalPosition;
+    public Vector3 aimingPosition;
+    public Vector3 targetPosition;
 
     [Header("Gun Positioning")]
     [Tooltip("Vector 3 position from player SETUP for NON AIMING values")]
@@ -71,22 +74,31 @@ public class Gun : Weapon
 
     [Header("Reference")]
     public CameraHandler m_CameraHandler;
+    public GameObject weaponSwayObject;
+
+    [Header("Aiming")]
+    public Transform sightTarget;
+    public float sightOffset;
+    public float aimingInTime;
+    private Vector3 weaponSwayPosition;
+    private Vector3 weaponSwayPositionVelocity;
 
     public override void Awake()
     {
         player = GetComponentInParent<PlayerManager>();
     }
 
-
-
     public void Update()
     {
         waitTillNextFire -= roundsPerSecond * Time.deltaTime;
 
-        // Recoil
-        targetRotatipn = Vector3.Lerp(targetRotatipn, Vector3.zero, returnSpeed * Time.deltaTime);
-        currentRotation = Vector3.Slerp(currentRotation, targetRotatipn, snappiness * Time.deltaTime);
-        recoilPivot.transform.localRotation = Quaternion.Euler(currentRotation);
+        HandleRecoil();
+
+        AimingIn();
+    }
+
+    private void LateUpdate()
+    {
     }
 
     public override void WeaponPrimaryAction()
@@ -145,12 +157,19 @@ public class Gun : Weapon
 
     }
 
+    public void HandleRecoil()
+    {
+        // Recoil
+        targetRotatipn = Vector3.Lerp(targetRotatipn, Vector3.zero, returnSpeed * Time.deltaTime);
+        currentRotation = Vector3.Slerp(currentRotation, targetRotatipn, snappiness * Time.deltaTime);
+        recoilPivot.transform.localRotation = Quaternion.Euler(currentRotation);
+    }
+
     public void RecoilFire()
     {
         if (player.isAiming)
         {
             targetRotatipn += new Vector3(aumRecoilX, Random.Range(-aumRecoilY, aumRecoilY), Random.Range(-aumRecoilZ, aumRecoilZ));
-
         }
         else
         {
@@ -160,6 +179,22 @@ public class Gun : Weapon
 
     public override void WeaponSecondAction()
     {
-        throw new System.NotImplementedException();
+       // AimingIn();
     }
+
+    private void AimingIn()
+    {
+        targetPosition = transform.position; ;
+
+        if (player.isAiming)
+        {
+            targetPosition = player.cameraHandler.transform.position + (weaponSwayObject.transform.position - sightTarget.position) + (player.cameraHandler.transform.forward * sightOffset);
+        }
+
+        weaponSwayPosition = weaponSwayObject.transform.position;
+        weaponSwayPosition = Vector3.SmoothDamp(weaponSwayPosition, targetPosition, ref weaponSwayPositionVelocity, aimingInTime);
+        weaponSwayObject.transform.position = weaponSwayPosition;
+    }
+
+
 }

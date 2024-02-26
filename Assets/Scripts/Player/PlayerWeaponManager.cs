@@ -36,11 +36,6 @@ public class PlayerWeaponManager : MonoBehaviour
 
 
 
-
-
-
-
-
     [Header("Item Change")]
     [SerializeField] public Animator ani;
     [SerializeField] Image ItemCanvasLogo;
@@ -56,11 +51,6 @@ public class PlayerWeaponManager : MonoBehaviour
 
     private Camera cameraComponent;
     private Transform gunPlaceHolder;
-
-
-
-
-
 
     private void Awake()
     {
@@ -82,31 +72,26 @@ public class PlayerWeaponManager : MonoBehaviour
     }
 
 
-    /*
-	*Update loop calling for methods that are descriped below where they are initiated.
-	*Calculation of weapon position when aiming or not aiming.
-	*/
 
     void FixedUpdate()
     {
-        //if (ItemChangeLogo)
-        //{
-        //    Color OpacityColor = ItemCanvasLogo.color;
-        //    OpacityColor.a = Mathf.Lerp(OpacityColor.a, 0, 20 * Time.deltaTime);
-        //    ItemCanvasLogo.color = OpacityColor;
-        //}
-        //else
-        //{
-        //    Color OpacityColor = ItemCanvasLogo.color;
-        //    OpacityColor.a = Mathf.Lerp(OpacityColor.a, 1, 6 * Time.deltaTime);
-        //    ItemCanvasLogo.color = OpacityColor;
-        //}
+        //ChangeLogo();
     }
 
-    private void Update()
+    void ChangeLogo()
     {
-        //ItemChange();
-        //HandleWeaponRotation();
+        if (ItemChangeLogo)
+        {
+            Color OpacityColor = ItemCanvasLogo.color;
+            OpacityColor.a = Mathf.Lerp(OpacityColor.a, 0, 20 * Time.deltaTime);
+            ItemCanvasLogo.color = OpacityColor;
+        }
+        else
+        {
+            Color OpacityColor = ItemCanvasLogo.color;
+            OpacityColor.a = Mathf.Lerp(OpacityColor.a, 1, 6 * Time.deltaTime);
+            ItemCanvasLogo.color = OpacityColor;
+        }
     }
 
     private void ItemChange()
@@ -174,10 +159,7 @@ public class PlayerWeaponManager : MonoBehaviour
         ItemChangeLogo = false;
     }
     
-    public void HandleWeaponRotation()
-    {
-        //m_WeaponPivot.rotation = Vector3.Lerp(m_WeaponPivot.rotation.for, player.cameraHandler.cam.transform.forward, Time.deltaTime);
-    }
+
 
     ///
 
