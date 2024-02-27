@@ -32,6 +32,7 @@ public class PlayerManager : MonoBehaviour
     public bool isAiming = false;
     public bool isWeaponHiding = false;
     public bool isReloading = false;
+    public bool isTwoHandingWeapon;
 
     [SerializeField, Range(0.1f, 5)] float HideDistance = 1.5f;
     [SerializeField] int LayerMaskInt = 1;
@@ -51,6 +52,13 @@ public class PlayerManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         InstallCameraMovement = cameraHandler.transform.localPosition;
+
+        Init();
+    }
+
+    private void Init()
+    {
+        playerWeaponManager.LoadTwoHandIKTargtets(true);
     }
 
     void Update()
@@ -78,33 +86,10 @@ public class PlayerManager : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void FixedUpdate()
     {
-        if (other.tag == "Ladder" && CanClimbing)
-        { 
-            CanRunning = false;
-            isClimbing = true;
-            playerLocomotionManager.WalkingValue /= 2;
-            playerWeaponManager.Hide(true);
-        }
+        playerAnimatorManager.CheckHandIKWeight(playerWeaponManager.rightHandIKTarget, playerWeaponManager.leftHandIKTarget, isTwoHandingWeapon);
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.tag == "Ladder" && CanClimbing)
-        {
-            playerLocomotionManager.moveDirection = new Vector3(0, inputHandler.vertical * playerLocomotionManager.Speed * (-cameraHandler.transform.localRotation.x / 1.7f), 0);
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Ladder" && CanClimbing)
-        {
-            CanRunning = true;
-            isClimbing = false;
-            playerLocomotionManager.WalkingValue *= 2;
-            playerWeaponManager.ani.SetBool("Hide", false);
-            playerWeaponManager.Hide(false);
-        }
-    }
+
 }

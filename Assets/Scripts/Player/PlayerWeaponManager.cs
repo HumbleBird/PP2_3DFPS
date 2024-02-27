@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class PlayerWeaponManager : MonoBehaviour
@@ -31,14 +32,32 @@ public class PlayerWeaponManager : MonoBehaviour
     [Tooltip("Preset value to tell how much bullets can one magazine carry.")]
     public float amountOfBulletsPerLoad = 5;
 
+    [Header("Hand IK Targets")]
+    public RightHandIKTarget rightHandIKTarget;
+    public LeftHandIKTarget leftHandIKTarget;
 
+    private void Awake()
+    {
+        player = GetComponent<PlayerManager>();
+        ani = GetComponent<Animator>();
+    }
 
+    private void Update()
+    {
+    }
 
+    public virtual void LoadTwoHandIKTargtets(bool isTwoHandingWeapon)
+    {
+        leftHandIKTarget = transform.GetComponentInChildren<LeftHandIKTarget>();
+        rightHandIKTarget = transform.GetComponentInChildren<RightHandIKTarget>();
 
+        if (leftHandIKTarget == null || rightHandIKTarget == null)
+            return;
 
+        player.playerAnimatorManager.SetHandIKForWeapon(rightHandIKTarget, leftHandIKTarget, isTwoHandingWeapon);
+    }
 
-
-
+    #region TEMP
 
 
     [Header("Item Change")]
@@ -57,18 +76,7 @@ public class PlayerWeaponManager : MonoBehaviour
     private Camera cameraComponent;
     private Transform gunPlaceHolder;
 
-
-
-
-
-
-    private void Awake()
-    {
-        player = GetComponent<PlayerManager>();
-        ani = GetComponent<Animator>();
-    }
-
-    private void Start()
+    private void Start2()
     {
         //Color OpacityColor = ItemCanvasLogo.color;
         //OpacityColor.a = 0;
@@ -81,13 +89,7 @@ public class PlayerWeaponManager : MonoBehaviour
         //StartCoroutine(ItemChangeObject());
     }
 
-
-    /*
-	*Update loop calling for methods that are descriped below where they are initiated.
-	*Calculation of weapon position when aiming or not aiming.
-	*/
-
-    void FixedUpdate()
+    void FixedUpdate2()
     {
         //if (ItemChangeLogo)
         //{
@@ -101,12 +103,6 @@ public class PlayerWeaponManager : MonoBehaviour
         //    OpacityColor.a = Mathf.Lerp(OpacityColor.a, 1, 6 * Time.deltaTime);
         //    ItemCanvasLogo.color = OpacityColor;
         //}
-    }
-
-    private void Update()
-    {
-        //ItemChange();
-        //HandleWeaponRotation();
     }
 
     private void ItemChange()
@@ -173,16 +169,9 @@ public class PlayerWeaponManager : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         ItemChangeLogo = false;
     }
-    
-    public void HandleWeaponRotation()
-    {
-        //m_WeaponPivot.rotation = Vector3.Lerp(m_WeaponPivot.rotation.for, player.cameraHandler.cam.transform.forward, Time.deltaTime);
-    }
 
-    ///
+    #endregion
 
-    private void HandleAiming()
-    {
 
-    }
+
 }

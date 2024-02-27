@@ -2,21 +2,31 @@ using EvolveGames;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.TextCore.Text;
 
 public class PlayerAnimatorManager : MonoBehaviour
 {
     PlayerManager player;
 
+    protected RigBuilder rigBuilder;
+    public TwoBoneIKConstraint leftHandConstraint;
+    public TwoBoneIKConstraint rightHandConstraint;
+
     int vertical;
     int horizontal;
 
-    private  void Awake()
+    bool handIKWeightReset = false;
+
+
+    private void Awake()
     {
         player = GetComponent<PlayerManager>();
 
         vertical = Animator.StringToHash("Vertical");
         horizontal = Animator.StringToHash("Horizontal");
+
+        rigBuilder = GetComponentInChildren<RigBuilder>();
     }
 
     public void UpdateAnimatorValues(float verticalAmount, float horizontalAmount, bool isSprinting)
@@ -89,5 +99,74 @@ public class PlayerAnimatorManager : MonoBehaviour
         player.animator.SetBool("isInteracting", isInteracting);
         player.animator.SetBool("isMirrored", mirrorAnim);
         player.animator.CrossFade(targetAnim, 0.2f);
+    }
+
+    public virtual void SetHandIKForWeapon(RightHandIKTarget rightHandTarget, LeftHandIKTarget leftHandTarget, bool isTwoHandingWeapon)
+    {
+        if (rightHandConstraint == null || leftHandConstraint == null)
+            return;
+
+        if (isTwoHandingWeapon)
+        {
+            if (rightHandTarget != null)
+            {
+                rightHandConstraint.data.target = rightHandTarget.transform;
+                rightHandConstraint.data.targetPositionWeight = 1; // 원한다면 각 무기 별로 할당 가능
+                rightHandConstraint.data.targetRotationWeight = 1;
+            }
+
+            if (leftHandTarget != null)
+            {
+                leftHandConstraint.data.target = leftHandTarget.transform;
+                leftHandConstraint.data.targetPositionWeight = 1;
+                leftHandConstraint.data.targetRotationWeight = 1;
+            }
+        }
+        else
+        {
+            rightHandConstraint.data.target = null;
+            leftHandConstraint.data.target = null;
+        }
+
+        rigBuilder.Build();
+    }
+
+    public virtual void CheckHandIKWeight(RightHandIKTarget rightHandIK, LeftHandIKTarget leftHandIK, bool isTwoHandingWeapon)
+    {
+        if (handIKWeightReset)
+        {
+            handIKWeightReset = false;
+
+            if (rightHandConstraint.data.target != null)
+            {
+                rightHandConstraint.data.target = rightHandIK.transform;
+                rightHandConstraint.data.targetPositionWeight = 1;
+                rightHandConstraint.data.targetRotationWeight = 1;
+            }
+
+            if (leftHandConstraint.data.target != null)
+            {
+                leftHandConstraint.data.target = leftHandIK.transform;
+                leftHandConstraint.data.targetPositionWeight = 1;
+                leftHandConstraint.data.targetRotationWeight = 1;
+            }
+        }
+    }
+
+    public virtual void EraseHandIKForWeapon()
+    {
+        handIKWeightReset = true;
+
+        if (rightHandConstraint.data.target != null)
+        {
+            rightHandConstraint.data.targetPositionWeight = 0;
+            rightHandConstraint.data.targetRotationWeight = 0;
+        }
+
+        if (leftHandConstraint.data.target != null)
+        {
+            leftHandConstraint.data.targetPositionWeight = 0;
+            leftHandConstraint.data.targetRotationWeight = 0;
+        }
     }
 }

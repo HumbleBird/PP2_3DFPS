@@ -132,4 +132,34 @@ public class PlayerLocomotionManager : MonoBehaviour
             transform.rotation *= Quaternion.Euler(0, player.cameraHandler.Lookhorizontal * player.cameraHandler.lookSpeed, 0);
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Ladder" && player.CanClimbing)
+        {
+            player.CanRunning = false;
+            player.isClimbing = true;
+            player.playerLocomotionManager.WalkingValue /= 2;
+            player.playerWeaponManager.Hide(true);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Ladder" && player.CanClimbing)
+        {
+            player.playerLocomotionManager.moveDirection = new Vector3(0, player.inputHandler.vertical * player.playerLocomotionManager.Speed * (-player.cameraHandler.transform.localRotation.x / 1.7f), 0);
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Ladder" && player.CanClimbing)
+        {
+            player.CanRunning = true;
+            player.isClimbing = false;
+            player.playerLocomotionManager.WalkingValue *= 2;
+            player.playerWeaponManager.ani.SetBool("Hide", false);
+            player.playerWeaponManager.Hide(false);
+        }
+    }
 }

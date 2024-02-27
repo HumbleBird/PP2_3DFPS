@@ -8,8 +8,8 @@ public class IKControl : MonoBehaviour
     private Animator _animator;
 
     public bool IkActive = true;
-    public IKControlHand RightHandTarget;
-    public IKControlHand LeftHandTarget;
+    public RightHandIKTarget RightHandTarget;
+    public RightHandIKTarget LeftHandTarget;
 
     // Start is called before the first frame update
     void Awake()

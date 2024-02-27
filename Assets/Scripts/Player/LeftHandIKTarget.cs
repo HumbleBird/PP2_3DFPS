@@ -2,11 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IKControlHand : MonoBehaviour
+public class LeftHandIKTarget : MonoBehaviour
 {
-    public bool isLeft;
-    public bool isRight;
-
     // Start is called before the first frame update
     void Start()
     {
