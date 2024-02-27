@@ -11,8 +11,6 @@ namespace EvolveGames
         [Header("MENU")]
         [SerializeField] GameObject MenuPanel;
         [SerializeField] Animator ani;
-        [SerializeField] PlayerManager Player;
-
 
         private void Update()
         {
@@ -23,7 +21,7 @@ namespace EvolveGames
                 if (MenuPanel.activeInHierarchy)
                 {
                     MenuPanel.SetActive(false);
-                    Player.canMove = true;
+                    player.canMove = true;
                     Cursor.visible = false;
                     Cursor.lockState = CursorLockMode.Locked;
                     Time.timeScale = 1.0f;
@@ -32,7 +30,7 @@ namespace EvolveGames
                 else
                 {
                     MenuPanel.SetActive(true);
-                    Player.canMove = false;
+                    player.canMove = false;
                     Cursor.visible = true;
                     Cursor.lockState = CursorLockMode.None;
                     Time.timeScale = 0.0f;

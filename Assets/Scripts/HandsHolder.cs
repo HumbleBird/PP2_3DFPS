@@ -32,11 +32,15 @@ namespace EvolveGames
         private void Awake()
         {
             player = GetComponentInParent<PlayerManager>();
-            ToggleSpeed = player.playerLocomotionManager.CroughSpeed * 1.5f;
 
             AmountValue = Amount;
             StartPos = transform.localPosition;
             StartRot = transform.localRotation.eulerAngles;
+        }
+
+        private void Start()
+        {
+            //ToggleSpeed = player.playerLocomotionManager.CroughSpeed * 1.5f;
         }
 
         private void Update()

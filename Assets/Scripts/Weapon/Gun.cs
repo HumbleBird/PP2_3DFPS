@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Define;
 
 public class Gun : Weapon
 {
@@ -71,6 +72,14 @@ public class Gun : Weapon
 
     [Header("Reference")]
     public CameraHandler m_CameraHandler;
+    public GameObject weaponSwayObject;
+
+    [Header("Sight")]
+    public Transform sightTarget;
+    public float sightOffset;
+    public float aimingInTime;
+    private Vector3 weaponSwayPosition;
+    private Vector3 weaponSwayPositionVelocity;
 
     public override void Awake()
     {
@@ -83,10 +92,8 @@ public class Gun : Weapon
     {
         waitTillNextFire -= roundsPerSecond * Time.deltaTime;
 
-        // Recoil
-        targetRotatipn = Vector3.Lerp(targetRotatipn, Vector3.zero, returnSpeed * Time.deltaTime);
-        currentRotation = Vector3.Slerp(currentRotation, targetRotatipn, snappiness * Time.deltaTime);
-        recoilPivot.transform.localRotation = Quaternion.Euler(currentRotation);
+        CalculateRecoil();
+        CalculateAimingIn();
     }
 
     public override void WeaponPrimaryAction()
@@ -145,6 +152,14 @@ public class Gun : Weapon
 
     }
 
+    public void CalculateRecoil()
+    {
+        // Recoil
+        targetRotatipn = Vector3.Lerp(targetRotatipn, Vector3.zero, returnSpeed * Time.deltaTime);
+        currentRotation = Vector3.Slerp(currentRotation, targetRotatipn, snappiness * Time.deltaTime);
+        recoilPivot.transform.localRotation = Quaternion.Euler(currentRotation);
+    }
+
     public void RecoilFire()
     {
         if (player.isAiming)
@@ -161,5 +176,19 @@ public class Gun : Weapon
     public override void WeaponSecondAction()
     {
         throw new System.NotImplementedException();
+    }
+
+    public void CalculateAimingIn()
+    {
+        var targetPosition = transform.position;
+
+        if(player.isAiming)
+        {
+            targetPosition = player.cameraHandler.transform.position + (weaponSwayObject.transform.position - sightTarget.position) + player.cameraHandler.transform.forward * sightOffset;
+        }
+
+        weaponSwayPosition = weaponSwayObject.transform.position;
+        weaponSwayPosition = Vector3.SmoothDamp(weaponSwayPosition, targetPosition, ref weaponSwayPositionVelocity, aimingInTime);
+        weaponSwayObject.transform.position = weaponSwayPosition;
     }
 }
