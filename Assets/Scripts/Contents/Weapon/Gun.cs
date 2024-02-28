@@ -8,6 +8,8 @@ public class Gun : Weapon
 {
     public GunStyles currentStyle;
 
+    // TODO 총기 데미지, 무게, 공속
+
     [Header("Bullet properties")]
     public short bulletsIHave = 20;
     public short bulletsInTheGun = 5;
@@ -20,18 +22,6 @@ public class Gun : Weapon
     [Tooltip("Rounds per second if weapon is set to automatic rafal.")]
     public float roundsPerSecond;
     private float waitTillNextFire;
-
-    [HideInInspector]
-    public Vector3 currentGunPosition;
-
-    [Header("Gun Positioning")]
-    [Tooltip("Vector 3 position from player SETUP for NON AIMING values")]
-    public Vector3 restPlacePosition;
-    [Tooltip("Vector 3 position from player SETUP for AIMING values")]
-    public Vector3 aimPlacePosition;
-    [Tooltip("Time that takes for gun to get into aiming stance.")]
-    public float gunAimTime = 0.1f;
-
 
     [Header("Muzzle")]
     [Tooltip("Array of muzzel flashes, randmly one will appear after each bullet.")]
@@ -67,11 +57,10 @@ public class Gun : Weapon
     private float fadeout_value = 1;
 
     [Header("Sounds")]
-    public AudioSource shoot_sound_source, reloadSound_source;
-    public static AudioSource hitMarker;
+    public AudioClip audioClip_Shoot;
+    public AudioClip audioClip_Reload;
 
     [Header("Reference")]
-    public CameraHandler m_CameraHandler;
     public GameObject weaponSwayObject;
 
     [Header("Sight")]
@@ -85,8 +74,6 @@ public class Gun : Weapon
     {
         player = GetComponentInParent<PlayerManager>();
     }
-
-
 
     public void Update()
     {
@@ -127,10 +114,8 @@ public class Gun : Weapon
 
                 holdFlash = Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position /*- muzzelPosition*/, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90)) as GameObject;
                 holdFlash.transform.parent = muzzelSpawn.transform;
-                if (shoot_sound_source)
-                    shoot_sound_source.Play();
-                else
-                    print("Missing 'Shoot Sound Source'.");
+
+                Managers.Sound.Play(audioClip_Shoot);
 
                 RecoilFire();
 
@@ -140,12 +125,7 @@ public class Gun : Weapon
 
             else
             {
-
                 Reload();
-                //if(!aiming)
-                //StartCoroutine(Reload_Animation());
-                //if(emptyClip_sound_source)
-                //	emptyClip_sound_source.Play();
             }
 
         }
@@ -206,6 +186,8 @@ public class Gun : Weapon
         player.playerAnimatorManager.PlayTargetAnimation("Rifle_Reload", true);
 
         player.playerAnimatorManager.EraseHandIKForWeapon();
+
+        Managers.Sound.Play(audioClip_Reload);
     }
 
     public void ReloadComplete()
