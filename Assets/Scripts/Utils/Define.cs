@@ -6,7 +6,7 @@ public class Define
 {
     #region Weapon
 
-    enum ItemStyle
+    public enum ItemStyle
     {
         AR,              // 돌격소총
         DMR,             // 지정사수소총
