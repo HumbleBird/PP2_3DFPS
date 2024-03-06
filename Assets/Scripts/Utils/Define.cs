@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class Define
 {
+    public enum E_PlayerMoveState
+    {
+        None,
+        Walk,
+        Run,
+        Sprint,
+        Crouch,
+        Prone,
+        Climbing
+    }
+
     #region Weapon
 
     public enum ItemStyle

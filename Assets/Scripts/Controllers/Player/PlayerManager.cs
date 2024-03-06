@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerManager : MonoBehaviour
@@ -12,59 +13,57 @@ public class PlayerManager : MonoBehaviour
     public PlayerWeaponManager playerWeaponManager;
     public PlayerAnimatorManager playerAnimatorManager;
 
-    public CameraHandler cameraHandler;
-
     public Animator animator;
-    public InputHandler inputHandler;
 
     [Header("Flag")]
-    public bool isInteracting = false;
-    public bool canMove = true;
-    public bool CanRunning = true;
-    public bool isRunning = false;
-    public bool CanClimbing = true;
-    public bool isClimbing = false;
-    public bool Moving = true;
-    public bool isCrouching = false;
+    public bool isInteracting = false; // 총 장전, 수류탄 던지기 등의 특정 수행 행동
+    public bool isGrounded;
+    public bool isDead = false;
     public bool CanHideDistanceWall = true;
     public bool WallDistance;
-    [SerializeField] public bool isGrounded { get { return characterController.isGrounded; } }
+
+    // Move
+    public bool canMove = true;
+    public bool CanClimbing = true;
+    public bool CanStand = true;
+
+    // Weapon
     public bool isAiming = false;
-    public bool isWeaponHiding = false;
-    public bool isReloading = false;
     public bool isTwoHandingWeapon;
 
     [SerializeField, Range(0.1f, 5)] float HideDistance = 1.5f;
     [SerializeField] int LayerMaskInt = 1;
 
+    private E_PlayerMoveState ePlayerMoveState;
 
-    Vector3 InstallCameraMovement;
+    public E_PlayerMoveState m_E_PlayerMoveState
+    {
+        set
+        {
+            if (value == ePlayerMoveState)
+                return;
 
-    private void Awake()
+            ePlayerMoveState = value;
+        }
+        get { return ePlayerMoveState;}
+    }
+
+    protected virtual void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        inputHandler = GetComponent<InputHandler>();
         playerLocomotionManager = GetComponent<PlayerLocomotionManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();
-        cameraHandler = GetComponentInChildren<CameraHandler>();
         playerAnimatorManager = GetComponent<PlayerAnimatorManager>();
+        animator = GetComponent<Animator>();
+
     }
 
-    void Start()
+    protected virtual void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        InstallCameraMovement = cameraHandler.transform.localPosition;
 
-        Init();
     }
 
-    private void Init()
-    {
-        playerWeaponManager.LoadTwoHandIKTargtets(true);
-    }
-
-    void Update()
+    protected virtual void Update()
     {
         RaycastHit ObjectCheck;
 
@@ -79,20 +78,12 @@ public class PlayerManager : MonoBehaviour
         // Animator Bool
         isInteracting = animator.GetBool("isInteracting");
 
-        animator.SetBool("isCrouching", isCrouching);
+        if(ePlayerMoveState == E_PlayerMoveState.Crouch)
+            animator.SetBool("isCrouching", true);
+        else
+            animator.SetBool("isCrouching", false);
+
         animator.SetBool("isAiming", isAiming);
-
     }
-
-    private void LateUpdate()
-    {
-        
-    }
-
-    protected virtual void FixedUpdate()
-    {
-        playerAnimatorManager.CheckHandIKWeight(playerWeaponManager.rightHandIKTarget, playerWeaponManager.leftHandIKTarget, isTwoHandingWeapon);
-    }
-
 
 }

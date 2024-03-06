@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 namespace EvolveGames
 {
@@ -60,7 +61,7 @@ namespace EvolveGames
             else if (speed > ToggleSpeed) 
                 FinalPos += HeadBobMotion() / 2f;
 
-            if(player.inputHandler.m_Sprint_Input)
+            if(player.m_E_PlayerMoveState == E_PlayerMoveState.Sprint)
             {
                 AmountValue = Amount * SprintAmount;
             }

@@ -14,9 +14,9 @@ namespace EvolveGames
 
         private void Update2()
         {
-            if (player.inputHandler.m_ESC_Input)
+            //if (player.inputHandler.m_ESC_Input)
             {
-                player.inputHandler.m_ESC_Input = false;
+                //player.inputHandler.m_ESC_Input = false;
 
                 if (MenuPanel.activeInHierarchy)
                 {

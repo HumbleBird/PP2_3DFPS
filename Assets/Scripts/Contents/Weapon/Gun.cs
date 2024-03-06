@@ -47,32 +47,27 @@ public class Gun : Weapon
     [SerializeField] private float snappiness;
     [SerializeField] private float returnSpeed;
 
-
-    [Header("Crosshair properties")]
-    public Texture horizontal_crosshair, vertical_crosshair;
-    public Vector2 top_pos_crosshair, bottom_pos_crosshair, left_pos_crosshair, right_pos_crosshair;
-    public Vector2 size_crosshair_vertical = new Vector2(1, 1), size_crosshair_horizontal = new Vector2(1, 1);
-    [HideInInspector]
-    public Vector2 expandValues_crosshair;
-    private float fadeout_value = 1;
-
     [Header("Sounds")]
     public AudioClip audioClip_Shoot;
     public AudioClip audioClip_Reload;
-
-    [Header("Reference")]
-    public GameObject weaponSwayObject;
 
     [Header("Sight")]
     public Transform sightTarget;
     public float sightOffset;
     public float aimingInTime;
+    public GameObject weaponSwayObject;
     private Vector3 weaponSwayPosition;
     private Vector3 weaponSwayPositionVelocity;
 
+    [Header("Aim")]
+    public Transform m_AimingTransform;
+    public Vector3 m_AimPositon;
+    public Vector3 m_NormalPosition;
+    public float m_fAimNormalChangeSpeed = 1f;
+
     public override void Awake()
     {
-        player = GetComponentInParent<PlayerManager>();
+        base.Awake();
     }
 
     public void Update()
@@ -80,30 +75,27 @@ public class Gun : Weapon
         waitTillNextFire -= roundsPerSecond * Time.deltaTime;
 
         CalculateRecoil();
-        CalculateAimingIn();
+        //HandleWeaponSway();
+        HandleAiming();
     }
 
     public override void WeaponPrimaryAction()
     {
-       // if (currentStyle == GunStyles.nonautomatic)
-        {
-            if (player.inputHandler.m_TapFire1_Input)
-            {
-                ShootMethod();
-            }
-        }
-        //if (currentStyle == GunStyles.automatic)
-        {
-            if (player.inputHandler.m_HoldFire1_Input)
-            {
-                ShootMethod();
-            }
-        }
+        ShootMethod();
     }
 
     private void ShootMethod()
     {
-        if (waitTillNextFire <= 0 && !player.isReloading && player.isRunning == false)
+        if (player.isInteracting)
+            return;
+
+        if (player.m_E_PlayerMoveState == E_PlayerMoveState.Sprint ||
+            player.m_E_PlayerMoveState == E_PlayerMoveState.Crouch ||
+            player.m_E_PlayerMoveState == E_PlayerMoveState.Prone ||
+            player.m_E_PlayerMoveState == E_PlayerMoveState.Climbing)
+            return;
+
+        if (waitTillNextFire <= 0)
         {
 
             if (bulletsInTheGun > 0)
@@ -118,6 +110,8 @@ public class Gun : Weapon
                 Managers.Sound.Play(audioClip_Shoot);
 
                 RecoilFire();
+
+                player.playerAnimatorManager.PlayTargetAnimation("Rifle_Fire", false);
 
                 waitTillNextFire = 1;
                 bulletsInTheGun -= 1;
@@ -154,21 +148,30 @@ public class Gun : Weapon
 
     public override void WeaponSecondAction()
     {
-        throw new System.NotImplementedException();
     }
 
-    public void CalculateAimingIn()
+    public void HandleWeaponSway()
     {
         var targetPosition = transform.position;
 
-        if(player.isAiming && player.isInteracting == false)
-        {
-            targetPosition = player.cameraHandler.transform.position + (weaponSwayObject.transform.position - sightTarget.position) + player.cameraHandler.transform.forward * sightOffset;
-        }
+
 
         weaponSwayPosition = weaponSwayObject.transform.position;
         weaponSwayPosition = Vector3.SmoothDamp(weaponSwayPosition, targetPosition, ref weaponSwayPositionVelocity, aimingInTime);
         weaponSwayObject.transform.position = weaponSwayPosition;
+    }
+
+    public void HandleAiming()
+    {
+        if (player.isAiming && player.isInteracting == false)
+        {
+            //targetPosition = player.cameraHandler.transform.position + (weaponSwayObject.transform.position - sightTarget.position) + player.cameraHandler.transform.forward * sightOffset;
+            m_AimingTransform.localPosition = Vector3.Lerp(m_AimingTransform.localPosition, m_AimPositon, Time.deltaTime * m_fAimNormalChangeSpeed);
+        }
+        else
+        {
+            m_AimingTransform.localPosition = Vector3.Lerp(m_AimingTransform.localPosition, m_NormalPosition, Time.deltaTime * m_fAimNormalChangeSpeed);
+        }
     }
 
     public override void WeaponRACtion()

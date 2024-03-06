@@ -42,10 +42,10 @@ namespace EvolveGames
         private void Update()
         {
 
-            float InputX = -player.inputHandler.mouseX;
-            float InputY = -player.inputHandler.mouseY;
-            float horizontal = -player.inputHandler.horizontal;
-            float vertical =  player.inputHandler.vertical;
+            float InputX = -player.playerLocomotionManager.m_fLookX;
+            float InputY = -player.playerLocomotionManager.m_fLookY;
+            float horizontal = -player.playerLocomotionManager.horizontal;
+            float vertical =  player.playerLocomotionManager.vertical;
 
             float moveX = Mathf.Clamp(InputX * amount, -maxAmount, maxAmount);
             float moveY = Mathf.Clamp(InputY * amount, -maxAmount, maxAmount);
@@ -56,7 +56,7 @@ namespace EvolveGames
 
             float TiltX = Mathf.Clamp(InputX * RotationAmount, -MaxRotationAmount, MaxRotationAmount);
             float TiltY = Mathf.Clamp(InputY * RotationSmooth, -MaxRotationAmount, MaxRotationAmount);
-            if (EnabledCroughRotation && player.inputHandler.m_Crouch_Input) 
+            if (EnabledCroughRotation && player.m_E_PlayerMoveState == Define.E_PlayerMoveState.Crouch) 
                 CroughRotation = Mathf.Lerp(CroughRotation, RotationCroughMultipler, RotationCroughSmooth * Time.deltaTime);
             else 
                 CroughRotation = Mathf.Lerp(CroughRotation, 0f, RotationCroughSmooth * Time.deltaTime);

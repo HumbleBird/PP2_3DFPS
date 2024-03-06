@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
+using static Define;
 
 public class PlayerWeaponManager : MonoBehaviour
 {
@@ -23,12 +26,9 @@ public class PlayerWeaponManager : MonoBehaviour
     private int m_CurrentInt_MeleeWeapon;
     private int m_CurrentInt_ThrowWeapon;
 
-
-
-
-    [Header("Hand IK Targets")]
-    public RightHandIKTarget rightHandIKTarget;
-    public LeftHandIKTarget leftHandIKTarget;
+    public LayerMask m_HitLayerMask;
+    [SerializeField]
+    private Transform AimTarget;
 
     private void Awake()
     {
@@ -36,27 +36,34 @@ public class PlayerWeaponManager : MonoBehaviour
         ani = GetComponent<Animator>();
     }
 
-    private void Update()
+    private void Start()
     {
-
+        if (m_CurrentWeapon != null)
+        {
+            SetupGun(m_CurrentWeapon);
+        }
     }
 
-    public virtual void LoadTwoHandIKTargtets(bool isTwoHandingWeapon)
+    private void Update()
     {
-        leftHandIKTarget = transform.GetComponentInChildren<LeftHandIKTarget>();
-        rightHandIKTarget = transform.GetComponentInChildren<RightHandIKTarget>();
+    }
 
-        if (leftHandIKTarget == null || rightHandIKTarget == null)
-            return;
+    private void SetupGun(Weapon weapon)
+    {
+        m_CurrentWeapon = weapon;
 
-        player.playerAnimatorManager.SetHandIKForWeapon(rightHandIKTarget, leftHandIKTarget, isTwoHandingWeapon);
+        // IK
+        player.playerAnimatorManager.SetWeaponIKTransform(m_CurrentWeapon.transform);
     }
 
     public void ReloadComplete()
     {
-        LoadTwoHandIKTargtets(true);
         ((Gun)m_CurrentWeapon).ReloadComplete();
+
+        // IK
+        player.playerAnimatorManager.SetWeaponIKTransform(m_CurrentWeapon.transform);
     }
+
 
     #region TEMP
 
@@ -106,41 +113,43 @@ public class PlayerWeaponManager : MonoBehaviour
         //}
     }
 
-    private void ItemChange()
-    {
-        if (player.inputHandler.mouseWheel > 0.1f)
-        {
-            player.inputHandler.mouseWheel = 0;
-            ItemIdInt++;
+    //private void ItemChange()
+    //{
+    //    if (player.inputHandler.mouseWheel > 0.1f)
+    //    {
+    //        player.inputHandler.mouseWheel = 0;
+    //        ItemIdInt++;
 
-        }
+    //    }
 
-        if (player.inputHandler.mouseWheel < -0.1f)
-        {
-            player.inputHandler.mouseWheel = 0;
-            ItemIdInt--;
-        }
+    //    if (player.inputHandler.mouseWheel < -0.1f)
+    //    {
+    //        player.inputHandler.mouseWheel = 0;
+    //        ItemIdInt--;
+    //    }
 
-        if (player.inputHandler.m_Hide_Input)
-        {
-            player.inputHandler.m_Hide_Input = false;
+    //    if (player.inputHandler.m_Hide_Input)
+    //    {
+    //        player.inputHandler.m_Hide_Input = false;
 
-            if (ani.GetBool("Hide"))
-                Hide(false);
-            else
-                Hide(true);
-        }
+    //        if (ani.GetBool("Hide"))
+    //            Hide(false);
+    //        else
+    //            Hide(true);
+    //    }
 
-        if (ItemIdInt < 0) ItemIdInt = LoopItems ? MaxItems : 0;
-        if (ItemIdInt > MaxItems) ItemIdInt = LoopItems ? 0 : MaxItems;
+    //    if (ItemIdInt < 0) 
+    //        ItemIdInt = LoopItems ? MaxItems : 0;
+    //    if (ItemIdInt > MaxItems) 
+    //        ItemIdInt = LoopItems ? 0 : MaxItems;
 
 
-        if (ItemIdInt != ChangeItemInt)
-        {
-            ChangeItemInt = ItemIdInt;
-            StartCoroutine(ItemChangeObject());
-        }
-    }
+    //    if (ItemIdInt != ChangeItemInt)
+    //    {
+    //        ChangeItemInt = ItemIdInt;
+    //        StartCoroutine(ItemChangeObject());
+    //    }
+    //}
 
     public void Hide(bool Hide)
     {

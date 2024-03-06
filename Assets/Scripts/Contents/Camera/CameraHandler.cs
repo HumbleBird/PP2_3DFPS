@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public class CameraHandler : MonoBehaviour
 {
@@ -71,7 +72,7 @@ public class CameraHandler : MonoBehaviour
 
         cam.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
 
-        if (player.isRunning && player.Moving)
+        if (player.m_E_PlayerMoveState == E_PlayerMoveState.Sprint)
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, RunningFOV, SpeedToFOV * Time.deltaTime);
         else
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, InstallFOV, SpeedToFOV * Time.deltaTime);

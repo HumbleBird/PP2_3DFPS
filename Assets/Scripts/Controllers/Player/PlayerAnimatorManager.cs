@@ -1,6 +1,8 @@
 using EvolveGames;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.TextCore.Text;
@@ -9,15 +11,26 @@ public class PlayerAnimatorManager : MonoBehaviour
 {
     PlayerManager player;
 
-    protected RigBuilder rigBuilder;
-    public TwoBoneIKConstraint leftHandConstraint;
-    public TwoBoneIKConstraint rightHandConstraint;
-
     int vertical;
     int horizontal;
 
+    [Header("Rig Builder")]
+    public Transform LeftHandIKTarget  ;
+    public Transform RightHandIKTarget ;
+    public Transform LeftElbowIKTarget ;
+    public Transform RightElbowIKTarget;
+
+    public MultiAimConstraint SpineConstraint;
+    public MultiAimConstraint UpperChestConstraint;
+    public MultiAimConstraint HeadConstraint;
+    public MultiAimConstraint RightShoulderConstraint;
+
     public bool handIKWeightReset = false;
 
+    [Range(0, 1f)]
+    public float HandIKAmount = 1f;
+    [Range(0, 1f)]
+    public float ElbowIKAmount = 1f;
 
     private void Awake()
     {
@@ -25,11 +38,15 @@ public class PlayerAnimatorManager : MonoBehaviour
 
         vertical = Animator.StringToHash("Vertical");
         horizontal = Animator.StringToHash("Horizontal");
-
-        rigBuilder = GetComponentInChildren<RigBuilder>();
     }
 
-    public void UpdateAnimatorValues(float verticalAmount, float horizontalAmount, bool isSprinting)
+    private void Update()
+    {
+        // Animator Parameters Value Change
+        UpdateAnimatorValues(player.playerLocomotionManager.moveAmount, player.playerLocomotionManager.horizontal);
+    }
+
+    public void UpdateAnimatorValues(float verticalAmount, float horizontalAmount)
     {
         #region Vertical
 
@@ -82,11 +99,19 @@ public class PlayerAnimatorManager : MonoBehaviour
 
         #endregion
 
-        if (isSprinting)
+        switch (player.m_E_PlayerMoveState)
         {
-            v = 2;
-            h = horizontalAmount;
+            case Define.E_PlayerMoveState.Walk:
+                //v /= 2;
+                break;
+            case Define.E_PlayerMoveState.Run:
+                break;
+            case Define.E_PlayerMoveState.Sprint:
+                v = 2;
+                break;
         }
+
+        h = horizontalAmount;
 
         player.animator.SetFloat("Vertical", v, 0.1f, Time.deltaTime);
         player.animator.SetFloat("Horizontal", h, 0.1f, Time.deltaTime);
@@ -100,77 +125,56 @@ public class PlayerAnimatorManager : MonoBehaviour
         player.animator.CrossFade(targetAnim, 0.2f);
     }
 
-    public virtual void SetHandIKForWeapon(RightHandIKTarget rightHandTarget, LeftHandIKTarget leftHandTarget, bool isTwoHandingWeapon)
-    {
-        if (rightHandConstraint == null || leftHandConstraint == null)
-            return;
-
-        if (isTwoHandingWeapon)
-        {
-            if (rightHandTarget != null)
-            {
-                rightHandConstraint.data.target = rightHandTarget.transform;
-                rightHandConstraint.data.targetPositionWeight = 1; // 원한다면 각 무기 별로 할당 가능
-                rightHandConstraint.data.targetRotationWeight = 1;
-            }
-
-            if (leftHandTarget != null)
-            {
-                leftHandConstraint.data.target = leftHandTarget.transform;
-                leftHandConstraint.data.targetPositionWeight = 1;
-                leftHandConstraint.data.targetRotationWeight = 1;
-            }
-        }
-        else
-        {
-            rightHandConstraint.data.target = null;
-            leftHandConstraint.data.target = null;
-        }
-
-        rigBuilder.Build();
-    }
-
-    public virtual void CheckHandIKWeight(RightHandIKTarget rightHandIK, LeftHandIKTarget leftHandIK, bool isTwoHandingWeapon)
+    private void OnAnimatorIK(int layerIndex)
     {
         if (player.isInteracting)
             return;
 
-        //if (handIKWeightReset)
+        if (player.playerWeaponManager.m_CurrentWeapon == null)
+            return;
+
+        if(LeftHandIKTarget != null)
         {
-            handIKWeightReset = false;
+            player.animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, HandIKAmount);
+            player.animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, HandIKAmount);
+            player.animator.SetIKPosition(AvatarIKGoal.LeftHand, LeftHandIKTarget.position);
+            player.animator.SetIKRotation(AvatarIKGoal.LeftHand, LeftHandIKTarget.rotation);
+        }
+        if(RightHandIKTarget != null)
+        {
+            player.animator.SetIKRotationWeight(AvatarIKGoal.RightHand, HandIKAmount);
+            player.animator.SetIKPositionWeight(AvatarIKGoal.RightHand, HandIKAmount);
+            player.animator.SetIKPosition(AvatarIKGoal.RightHand, RightHandIKTarget.position);
+            player.animator.SetIKRotation(AvatarIKGoal.RightHand, RightHandIKTarget.rotation);
+        }
+        if(LeftElbowIKTarget != null)
+        {
+            player.animator.SetIKHintPosition(AvatarIKHint.LeftElbow, LeftElbowIKTarget.position);
+            player.animator.SetIKHintPositionWeight(AvatarIKHint.LeftElbow, ElbowIKAmount);
+        }
 
-            if (rightHandConstraint.data.target != null)
-            {
-                rightHandConstraint.data.target = rightHandIK.transform;
-                rightHandConstraint.data.targetPositionWeight = 1;
-                rightHandConstraint.data.targetRotationWeight = 1;
-            }
-
-            if (leftHandConstraint.data.target != null)
-            {
-                leftHandConstraint.data.target = leftHandIK.transform;
-                leftHandConstraint.data.targetPositionWeight = 1;
-                leftHandConstraint.data.targetRotationWeight = 1;
-            }
+        if(RightElbowIKTarget != null)
+        {
+            player.animator.SetIKHintPosition(AvatarIKHint.RightElbow, RightElbowIKTarget.position);
+            player.animator.SetIKHintPositionWeight(AvatarIKHint.RightElbow, ElbowIKAmount);
         }
     }
 
-    public virtual void EraseHandIKForWeapon()
+    public void SetWeaponIKTransform(Transform weapon)
     {
-        handIKWeightReset = true;
+        Transform[] allChildren = weapon.GetComponentsInChildren<Transform>();
+        LeftElbowIKTarget = allChildren.FirstOrDefault(child => child.name == "LeftElbow");
+        RightHandIKTarget = allChildren.FirstOrDefault(child => child.name == "RightElbow");
+        LeftElbowIKTarget = allChildren.FirstOrDefault(child => child.name == "LeftHand");
+        RightElbowIKTarget = allChildren.FirstOrDefault(child => child.name == "RightHand");
 
-        if (rightHandConstraint.data.target != null)
-        {
-            rightHandConstraint.data.targetPositionWeight = 0;
-            rightHandConstraint.data.targetRotationWeight = 0;
-        }
-
-        if (leftHandConstraint.data.target != null)
-        {
-            leftHandConstraint.data.targetPositionWeight = 0;
-            leftHandConstraint.data.targetRotationWeight = 0;
-        }
     }
 
-
+    public void EraseHandIKForWeapon()
+    {
+        LeftHandIKTarget = null;
+        RightHandIKTarget = null;
+        LeftElbowIKTarget = null;
+        RightElbowIKTarget = null;
+    }
 }
