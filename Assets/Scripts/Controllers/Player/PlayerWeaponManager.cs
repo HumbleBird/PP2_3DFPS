@@ -38,14 +38,19 @@ public class PlayerWeaponManager : MonoBehaviour
 
     private void Start()
     {
-        if (m_CurrentWeapon != null)
-        {
-            SetupGun(m_CurrentWeapon);
-        }
+        Init();
     }
 
     private void Update()
     {
+    }
+
+    public void Init()
+    {
+        if (m_CurrentWeapon != null)
+        {
+            SetupGun(m_CurrentWeapon);
+        }
     }
 
     private void SetupGun(Weapon weapon)

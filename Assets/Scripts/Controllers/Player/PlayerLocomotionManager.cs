@@ -57,7 +57,7 @@ public class PlayerLocomotionManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StandHeight = player.characterController.height;
+        Init();
     }
 
     // Update is called once per frame
@@ -71,6 +71,12 @@ public class PlayerLocomotionManager : MonoBehaviour
         HandleRotation();
         HandleCrouch();
         HandleGroundCheck();
+    }
+
+    public void Init()
+    {
+        StandHeight = player.characterController.height;
+
     }
 
     private void HandleMovement()
@@ -119,19 +125,22 @@ public class PlayerLocomotionManager : MonoBehaviour
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         MyPlayerManager myPlayer = player as MyPlayerManager;
+        if (myPlayer != null)
+        {
+            moveDirection = myPlayer.cameraHandler.transform.forward * myPlayer.playerLocomotionManager.vertical;
+            moveDirection += myPlayer.cameraHandler.transform.right * myPlayer.playerLocomotionManager.horizontal;
+            moveDirection.Normalize();
+            moveDirection.y = 0;
 
-        moveDirection = myPlayer.cameraHandler.transform.forward * myPlayer.playerLocomotionManager.vertical;
-        moveDirection += myPlayer.cameraHandler.transform.right * myPlayer.playerLocomotionManager.horizontal;
-        moveDirection.Normalize();
-        moveDirection.y = 0;
-
-        player.characterController.Move(moveDirection * Time.deltaTime * currentMoveSpeed);
+            player.characterController.Move(moveDirection * Time.deltaTime * currentMoveSpeed);
+        }
     }
 
     private void HandleRotation()
     {
         MyPlayerManager myPlayer = player as MyPlayerManager;
-        transform.rotation *= Quaternion.Euler(0, myPlayer.cameraHandler.Lookhorizontal * myPlayer.cameraHandler.lookSpeed, 0);
+        if(myPlayer != null)
+            transform.rotation *= Quaternion.Euler(0, myPlayer.cameraHandler.Lookhorizontal * myPlayer.cameraHandler.lookSpeed, 0);
 
         //Vector3 targetDir = Vector3.zero;
 

@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 6693269235211425403}
   - component: {fileID: 3668038953265027115}
   m_Layer: 0
-  m_Name: Scarecrow
+  m_Name: Dummie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -136,15 +136,16 @@ MonoBehaviour:
   playerLocomotionManager: {fileID: 0}
   playerWeaponManager: {fileID: 0}
   playerAnimatorManager: {fileID: 0}
+  playerStatManager: {fileID: 0}
   animator: {fileID: 5851882073250514816}
   isInteracting: 0
+  isGrounded: 0
   isDead: 0
   CanHideDistanceWall: 1
   WallDistance: 0
   canMove: 1
   CanClimbing: 1
   CanStand: 1
-  canJump: 1
   isAiming: 0
   isTwoHandingWeapon: 0
   HideDistance: 1.5
@@ -161,7 +162,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c53391cbda35ee0459e06a31571efb6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   currentMoveSpeed: 0
   walkSpeed: 3
   RunSpeed: 4
@@ -189,6 +189,9 @@ MonoBehaviour:
   m_fLookX: 0
   m_fLookY: 0
   m_fRotationSpeed: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!114 &773074941378063172
 MonoBehaviour:
   m_ObjectHideFlags: 0

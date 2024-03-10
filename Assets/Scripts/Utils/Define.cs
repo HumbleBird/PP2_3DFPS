@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class Define
 {
+    public enum E_HitDetection
+    {
+        Head,
+        Body,
+        Arm,
+        Leg,
+    }
+
     public enum E_PlayerMoveState
     {
         None,

@@ -15,8 +15,9 @@ public class Gun : Weapon
     public short bulletsInTheGun = 5;
     public short amountOfBulletsPerLoad = 5;
     public Transform bulletSpawnPlace;
-    public GameObject bullet;
-    private Transform gunPlaceHolder;
+    public GameObject bulletPrefab;
+    public float bulletVelocity = 30;
+    public float bulletPrefabLifeTime = 3f;
 
     [Header("Fire Property")]
     [Tooltip("Rounds per second if weapon is set to automatic rafal.")]
@@ -65,6 +66,9 @@ public class Gun : Weapon
     public Vector3 m_NormalPosition;
     public float m_fAimNormalChangeSpeed = 1f;
 
+    [Header("Damage")]
+    public int m_iDamage = 10;
+
     public override void Awake()
     {
         base.Awake();
@@ -100,10 +104,16 @@ public class Gun : Weapon
 
             if (bulletsInTheGun > 0)
             {
+                // Bullet Spawn
+                GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPlace.position, Quaternion.identity);
+                Bullet bulletScript = bullet.GetComponent<Bullet>();
+                bulletScript.m_Rigidbody.AddForce(bulletSpawnPlace.forward.normalized * bulletVelocity, ForceMode.Impulse);
+                bulletScript.LifeTime = bulletPrefabLifeTime;
+                bulletScript.Owner = player;
+                bulletScript.gun = this;
 
+                // Muzzle
                 int randomNumberForMuzzelFlash = Random.Range(0, 5);
-                Instantiate(bullet, bulletSpawnPlace.transform.position, bulletSpawnPlace.transform.rotation);
-
                 holdFlash = Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position /*- muzzelPosition*/, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90)) as GameObject;
                 holdFlash.transform.parent = muzzelSpawn.transform;
 
@@ -211,4 +221,6 @@ public class Gun : Weapon
             bulletsIHave = 0;
         }
     }
+
+
 }

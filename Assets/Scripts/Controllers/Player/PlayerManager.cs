@@ -12,6 +12,7 @@ public class PlayerManager : MonoBehaviour
     public PlayerLocomotionManager playerLocomotionManager;
     public PlayerWeaponManager playerWeaponManager;
     public PlayerAnimatorManager playerAnimatorManager;
+    public PlayerStatManager playerStatManager;
 
     public Animator animator;
 
@@ -48,12 +49,18 @@ public class PlayerManager : MonoBehaviour
         get { return ePlayerMoveState;}
     }
 
+    // Wall & Ladder
+    //private float m_fCheckLadder
+
     protected virtual void Awake()
     {
         characterController = GetComponent<CharacterController>();
+
         playerLocomotionManager = GetComponent<PlayerLocomotionManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();
         playerAnimatorManager = GetComponent<PlayerAnimatorManager>();
+        playerStatManager = GetComponent<PlayerStatManager>(); 
+        
         animator = GetComponent<Animator>();
 
     }
@@ -65,15 +72,15 @@ public class PlayerManager : MonoBehaviour
 
     protected virtual void Update()
     {
-        RaycastHit ObjectCheck;
+        //RaycastHit ObjectCheck;
 
         // Check wall
-        if (WallDistance != Physics.Raycast(GetComponentInChildren<Camera>().transform.position, transform.TransformDirection(Vector3.forward), out ObjectCheck, HideDistance, LayerMaskInt) && CanHideDistanceWall)
-        {
-            WallDistance = Physics.Raycast(GetComponentInChildren<Camera>().transform.position, transform.TransformDirection(Vector3.forward), out ObjectCheck, HideDistance, LayerMaskInt);
-            //playerWeaponManager.ani.SetBool("Hide", WallDistance);
-            playerWeaponManager.DefiniteHide = WallDistance;
-        }
+        //if (WallDistance != Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out ObjectCheck, HideDistance, LayerMaskInt) && CanHideDistanceWall)
+        //{
+        //    WallDistance = Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out ObjectCheck, HideDistance, LayerMaskInt);
+        //    //playerWeaponManager.ani.SetBool("Hide", WallDistance);
+        //    playerWeaponManager.DefiniteHide = WallDistance;
+        //}
 
         // Animator Bool
         isInteracting = animator.GetBool("isInteracting");
@@ -84,6 +91,38 @@ public class PlayerManager : MonoBehaviour
             animator.SetBool("isCrouching", false);
 
         animator.SetBool("isAiming", isAiming);
+        animator.SetBool("IsDead", isDead);
     }
 
+    public virtual void OnDead()
+    {
+        isDead = true;
+        canMove = false;
+
+        // RegDoll
+    }
+
+    public virtual void LifeInit()
+    {
+        playerStatManager.Init();
+        FlagInit();
+        playerWeaponManager.Init();
+        playerLocomotionManager.Init();
+    }
+
+    public void FlagInit()
+    {
+        isInteracting = false; // 총 장전, 수류탄 던지기 등의 특정 수행 행동
+        isDead = false;
+        CanHideDistanceWall = true;
+
+
+        canMove = true;
+        CanClimbing = true;
+        CanStand = true;
+
+
+        isAiming = false;
+        isTwoHandingWeapon = false;
+    }
 }

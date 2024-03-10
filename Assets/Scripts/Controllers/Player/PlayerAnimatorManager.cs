@@ -32,6 +32,8 @@ public class PlayerAnimatorManager : MonoBehaviour
     [Range(0, 1f)]
     public float ElbowIKAmount = 1f;
 
+
+
     private void Awake()
     {
         player = GetComponent<PlayerManager>();
@@ -177,4 +179,6 @@ public class PlayerAnimatorManager : MonoBehaviour
         LeftElbowIKTarget = null;
         RightElbowIKTarget = null;
     }
+
+   
 }
